@@ -3,9 +3,19 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Honeycomb</title>
+    <div style="position:absolute; left:10px;top:10px;">
+        <span>A: going WEST</span><br>
+        <span>D: going EAST</span><br>
+        <span>Z: going SOUTH-WEST</span><br>
+        <span>X: going SOUTH-EAST</span><br>
+        <span>[: turn clockwise</span><br>
+        <span>]: turn counter-clockwise</span><br>
+    <div class="score" style="color:red;"></div>
+    </div>
+
 </head>
 <body>
-<div id="chart">
+<div id="chart" style="position:absolute; left:50%; margin-left:-460px;">
 </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -13,6 +23,8 @@
 <script src="hexbin.js"></script>
 <script src="json.js"></script>
 <script>
+    $.get( "http://localhost:5000/field", function( data ) {
+      console.log(data)
     var margin = {
                 top: 50,
                 right: 20,
@@ -22,10 +34,10 @@
             width = 850,
             height = 850;
 
-    var MapColumns = json.width,
-            MapRows = json.height,
-            colored = json.colored,
-            colored2 = json2.colored;
+    var MapColumns = data.width,
+            MapRows = data.height;
+            //colored = json.colored,
+            //colored2 = json2.colored;
 
     var points = [];
     for (var i = 0; i < MapRows; i++) {
@@ -44,6 +56,8 @@
             .radius(20);
 
     function appendRule(response){
+        var score = response.score?response.score:0
+        $('.score').html('Score: '+score);
         svg.append("g")
                 .selectAll(".hexagon")
                 .data(hexbin(points))
@@ -68,7 +82,7 @@
                     return color
                 });
     }
-    appendRule(json);
+    appendRule(data);
     $(document).keypress(function(e) {
         var key;
         switch(e.keyCode) {
@@ -92,14 +106,18 @@
                 break;
         }
         function sendKey(key){
+            $.get( "http://localhost:5000/move?code="+key, function( data ) {
+                if (!data.end){
+                    svg.selectAll("*").remove();
+                    appendRule(data);
+                } else {
+                    alert ('Game Over')
+                }
+            });
             console.log(key);
-            svg.selectAll("*").remove();
-            if (key=='W'||key=='E'){
-                appendRule(json2);
-            } else {
-                appendRule(json);
-            }
         }
+
+    });
 
     });
 </script>
