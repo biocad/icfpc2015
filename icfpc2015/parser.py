@@ -1,9 +1,9 @@
 __author__ = 'pavel'
 
 import sys
-from cell import Cell
-from board import Board
-from unit import Unit
+from icfpc2015.cell import Cell
+from icfpc2015.board import Board
+from icfpc2015.unit import Unit
 
 def parse_cell(json_cell):
     return Cell(x=json_cell['x'], y=json_cell['y'])

@@ -1,7 +1,7 @@
 __author__ = 'pavel'
 
-from cell import Cell, dumps_cell
-from movement import Movement, BACKWARD_MAP
+from icfpc2015.cell import Cell, dumps_cell
+from icfpc2015.movement import Movement, BACKWARD_MAP
 
 
 class Unit(object):
