@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
  Data structures useful for implementing SearchAgents
 """

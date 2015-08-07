@@ -1,12 +1,11 @@
-__author__ = 'pavel'
-
+# -*- coding: utf-8 -*-
 import argparse
 import json
 import sys
 
 import parser
 
-from game import Game
+from icfpc2015.python.game import Game
 
 def play(board):
     return "ctulhu"

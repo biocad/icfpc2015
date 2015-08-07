@@ -1,6 +1,4 @@
-__author__ = 'pavel'
-
-
+# -*- coding: utf-8 -*-
 class Board(object):
     def __init__(self, id, height, width, filled, length, sourceSeeds):
         self.id = id

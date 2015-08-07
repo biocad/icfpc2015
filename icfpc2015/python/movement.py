@@ -1,7 +1,5 @@
-__author__ = 'pavel'
-
+# -*- coding: utf-8 -*-
 from enum import Enum
-from itertools import chain
 
 # {p, ', !, ., 0, 3}	move W
 # {b, c, e, f, y, 2}	move E

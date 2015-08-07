@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
-from icfpc2015 import search
-from icfpc2015.unit import Unit
+from icfpc2015.python import search
+from icfpc2015.python.unit import Unit
 
 
 class SearchAgent(Unit):
