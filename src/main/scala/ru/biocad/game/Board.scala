@@ -36,6 +36,8 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
   private def intersects(cell: Cell): Boolean =
     filled.contains(cell)
 
+  def getBoard : Board = board
+
   def isLocked(bee : Bee) : Boolean =
     if (bee.members.forall(a => board.inBoard(a) && !intersects(a))) {
       false

@@ -22,4 +22,38 @@ class Game(board : Board) {
   }
 }
 
-case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], currentBee : Int)
+case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], currentBee : Int) {
+  def dumpJson : String = {
+    val disabled = boardState.filled.map {
+      case cell =>
+        s"""
+          |{
+          |  "posX": ${cell.x},
+          |  "posY": ${cell.y},
+          |  "state": "disabled"
+          |}
+        """.stripMargin
+    }.mkString(",\n")
+    val active = bee.members.map {
+      case cell =>
+        s"""
+           |{
+           |  "posX": ${cell.x},
+           |  "posY": ${cell.y},
+           |  "state": "active"
+           |}
+        """.stripMargin
+    }.mkString(",\n")
+
+    s"""
+      |{
+      |  "height": ${boardState.getBoard.height},
+      |  "width":  ${boardState.getBoard.width},
+      |  "colored": [
+      |    ${List(disabled, active).filter(_.nonEmpty).mkString(",\n")}
+      |  ],
+      |  "score": 100500
+      |}
+    """.stripMargin
+  }
+}
