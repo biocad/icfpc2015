@@ -1,0 +1,93 @@
+from datetime import timedelta
+from functools import update_wrapper
+import json
+import random
+
+from flask import Flask
+from flask import jsonify
+from flask import request
+from flask import make_response
+from flask import current_app
+
+from icfpc2015.python.game import Game
+from icfpc2015.python.parser import parse_board
+from icfpc2015.python.parser import parse_units
+from werkzeug.contrib.fixers import ProxyFix
+
+app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app)
+app.config['PROPAGATE_EXCEPTIONS'] = True
+game = None
+
+def crossdomain(origin=None, methods=None, headers=None,
+                max_age=21600, attach_to_all=True,
+                automatic_options=True):
+    basestring = (str, bytes)
+
+    if methods is not None:
+        methods = ', '.join(sorted(x.upper() for x in methods))
+    if headers is not None and not isinstance(headers, basestring):
+        headers = ', '.join(x.upper() for x in headers)
+    if not isinstance(origin, basestring):
+        origin = ', '.join(origin)
+    if isinstance(max_age, timedelta):
+        max_age = max_age.total_seconds()
+
+    def get_methods():
+        if methods is not None:
+            return methods
+        options_resp = current_app.make_default_options_response()
+        return options_resp.headers['allow']
+
+    def decorator(f):
+        def wrapped_function(*args, **kwargs):
+            if automatic_options and request.method == 'OPTIONS':
+                resp = current_app.make_default_options_response()
+            else:
+                resp = make_response(f(*args, **kwargs))
+            if not attach_to_all and request.method != 'OPTIONS':
+                return resp
+
+            h = resp.headers
+
+            h['Access-Control-Allow-Origin'] = origin
+            h['Access-Control-Allow-Methods'] = get_methods()
+            h['Access-Control-Max-Age'] = str(max_age)
+            if headers is not None:
+                h['Access-Control-Allow-Headers'] = headers
+            return resp
+
+        f.provide_automatic_options = False
+        return update_wrapper(wrapped_function, f)
+    return decorator
+
+
+@app.route('/field', methods=['GET'])
+@crossdomain(origin='*')
+def get_field():
+    with open('../../problems/problem_0.json') as fp:
+        json_data = json.load(fp)
+        board = parse_board(json_data)
+        units = parse_units(json_data)
+        game = Game(board=board, units=units)
+
+    return jsonify({'height': game.board.height,
+                    'width': game.board.width,
+                    'colored': []
+                    })
+
+@app.route('/move', methods=['GET'])
+@crossdomain(origin='*')
+def get_move():
+    code = request.args.get('code')
+    rand_cells = [{'posX': random.randint(0, game.board.height),
+                   'posY': random.randint(0, game.board.width),
+                   'state': 'active'}
+                  for _ in range(10)]
+    return jsonify({'height': game.board.height,
+                    'width': game.board.width,
+                    'colored': rand_cells
+                    })
+
+if __name__ == '__main__':
+    app.run(debug=True)
