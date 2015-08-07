@@ -4,13 +4,9 @@ import argparse
 import json
 import sys
 
-from board import Board
+import parser
 
-def load_board(json_string):
-    d = json.loads(json_string)
-    board = Board(d["id"], d["height"], d["width"], d["filled"], d["sourceLength"])
-    print(board.__dict__, file=sys.stderr)
-    return board
+from game import Game
 
 def play(board):
     return "ctulhu"
@@ -31,8 +27,11 @@ def main():
     for filename in args.FILENAME:
         with open(filename, "rt") as fd:
             s = fd.readlines()
-        s = "".join(s)
-        print(play(load_board(s)))
+        json_data = json.loads("".join(s))
+        board = parser.parse_board(json_data)
+        units = parser.parse_units(json_data)
+        game = Game(board=board, units=units)
+        print(game.dumps())
 
 
 if __name__ == "__main__":
