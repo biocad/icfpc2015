@@ -13,6 +13,12 @@ case class Bee(members: Vector[Cell], pivot: Cell) {
     case mv =>
       Bee(members = members.map(_.move(mv)), pivot.move(mv))
   }
+
+  def width : Int =
+    (members.map(_.x).max - members.map(_.x).min) + 1
+
+  def height : Int =
+    (members.map(_.y).max - members.map(_.y).min) + 1
 }
 
 object Bee {

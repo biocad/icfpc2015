@@ -5,15 +5,6 @@ import ru.biocad.util.Parser
 
 object Solver {
 
-  def parseRun(c: String, bee: Bee, board: Board): Vector[BoardState] = {
-    val commands = Parser.parseString(c)
-
-    val initialState: BoardState = new BoardState(Vector())(board) initNewBee bee
-    val nextStates: Vector[BoardState] = commands.map(c => initialState.getNextState(bee, c))
-
-    initialState +: nextStates
-  }
-
   def dump(states: Vector[BoardState]): String = {
     states.foldLeft("")((acc, bs) => acc + bs.dump + "\n")
   }
