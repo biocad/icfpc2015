@@ -3,13 +3,12 @@ import argparse
 import json
 import sys
 
-import parser
-
 from icfpc2015.python.game import Game
+from icfpc2015.python.parser import parse_board
+from icfpc2015.python.parser import parse_units
 
 def play(board):
     return "ctulhu"
-
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -27,8 +26,8 @@ def main():
         with open(filename, "rt") as fd:
             s = fd.readlines()
         json_data = json.loads("".join(s))
-        board = parser.parse_board(json_data)
-        units = parser.parse_units(json_data)
+        board = parse_board(json_data)
+        units = parse_units(json_data)
         game = Game(board=board, units=units)
         print(game.dumps())
 
