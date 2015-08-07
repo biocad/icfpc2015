@@ -1,9 +1,17 @@
 package ru.biocad.util
 
-import ru.biocad.game.Direction
+
+import scalaz._, Scalaz._
+import argonaut._, Argonaut._
+
+import ru.biocad.game.{Board, Direction, Cell}
 import ru.biocad.game.Direction._
 
 object Parser {
+
+  def parseProblem(c: String) = {
+    ???
+  }
 
   def parseSoleCommand(c: String): Direction = {
     c match {
@@ -20,5 +28,36 @@ object Parser {
   def parseString(c: String): Vector[Direction] = {
     c.split(" ").map(parseSoleCommand).toVector
   }
+
+}
+
+
+case class Problem(height: Int, width: Int, id: Int, filled: Vector[Cell])
+
+
+object Problem {
+  implicit def ProblemCodecJson: CodecJson[Problem] =
+    casecodec4(Problem.apply, Problem.unapply)("height", "width", "id", "filled")
+}
+
+
+object ParserTest extends App {
+  
+  val input =
+    """{
+      |  "height": 10,
+      |  "width": 10,
+      |  "id": 0,
+      |  "filled": [{"x":2,"y":4}]
+      |}
+    """.stripMargin
+
+  val board = input.decodeOption[Board].getOrElse(Nil)
+  val cells = input.decodeOption[Vector[Cell]].getOrElse(Nil)
+  val problem = input.decodeOption[Problem].getOrElse(Nil)
+
+  println(board)
+  println(cells)
+  println(problem)
 
 }

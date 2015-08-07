@@ -1,5 +1,7 @@
 package ru.biocad.game
 
+import argonaut.Argonaut._
+import argonaut.CodecJson
 import ru.biocad.game.CellsRelation.CellsRelation
 import ru.biocad.game.Direction.Direction
 
@@ -103,6 +105,13 @@ case class Cell(x : Int, y : Int) {
     }
   }
 }
+
+
+object Cell {
+  implicit def CellCodecJson: CodecJson[Cell] =
+    casecodec2(Cell.apply, Cell.unapply)("x", "y")
+}
+
 
 /*
   x y  dx dy

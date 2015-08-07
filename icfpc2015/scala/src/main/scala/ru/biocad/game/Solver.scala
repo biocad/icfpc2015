@@ -1,6 +1,6 @@
 package ru.biocad.game
 
-import ru.biocad.game.Direction.Direction
+import ru.biocad.util.Parser
 
 
 object Solver {
