@@ -26,6 +26,7 @@ object Main extends App {
             st match {
               case Some(state) =>
                 val newState = game.movement(state)(ch)
+                print(newState.get.dumpJson)
                 newState
               case None => None
             }

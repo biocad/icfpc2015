@@ -9,9 +9,6 @@ from flask import request
 from flask import make_response
 from flask import current_app
 
-from icfpc2015.python.game import Game
-from icfpc2015.python.parser import parse_board
-from icfpc2015.python.parser import parse_units
 from werkzeug.contrib.fixers import ProxyFix
 
 app = Flask(__name__)
