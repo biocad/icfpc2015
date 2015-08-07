@@ -36,13 +36,14 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
   private def intersects(cell: Cell): Boolean =
     filled.contains(cell)
 
-  def update(bee: Bee): (BoardState, Boolean) =
+  def isLocked(bee : Bee) : Boolean =
     if (bee.members.forall(a => board.inBoard(a) && !intersects(a))) {
-      (this, false)
+      false
     }
-    else {
-      (BoardState(filled = newField(bee))(board = board), true)
-    }
+    else true
+
+  def update(bee: Bee): BoardState =
+    BoardState(filled = newField(bee))(board = board)
 
   private def newField(bee: Bee): Vector[Cell] = {
     (filled ++ bee.members).distinct.groupBy(_.y).flatMap {

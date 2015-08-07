@@ -11,8 +11,9 @@ import ru.biocad.game.Direction._
 
 object Parser {
 
-  def parseProblem(c: String) = {
-    ???
+  def parseProblem(c: String): Problem = {
+    val problem = c.decodeOption[Problem] // c.decodeOption[Problem].getOrElse(Nil)
+    problem.get
   }
 
   def parseSoleCommand(c: String): Direction = {
@@ -44,7 +45,7 @@ case class Problem(height: Int,
 
   def getGameRules = {
     val board = Board(id, width, height)
-    val unitWaves = BeeGenerator.generate(units.toArray, sourceSeeds.toArray, sourceLength)
+    val unitWaves = new AbsBeeGenerator(board).generate(units.toArray, sourceSeeds.toArray, sourceLength)
 
     (board, filled, unitWaves)
   }

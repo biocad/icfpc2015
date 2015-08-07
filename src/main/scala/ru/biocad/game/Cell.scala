@@ -17,9 +17,9 @@ case class Cell(x : Int, y : Int) {
     case Direction.East =>
       Cell(x + 1, y)
     case Direction.SouthWest =>
-      Cell(x - 1, y - 1)
+      Cell(if (y % 2 == 0) x - 1 else x, y + 1)
     case Direction.SouthEast =>
-      Cell(x + 1, y - 1)
+      Cell(if (y % 2 == 0) x else x + 1, y + 1)
     case Direction.Nothing =>
       this
   }
@@ -56,12 +56,13 @@ case class Cell(x : Int, y : Int) {
       meOnDiagFrom(cell) match {
         case Some(a) => List(a)
         case None =>
-          if (dx < 0) {
-            CellsRelation.W :: goTo(CellsRelation.E).myRelationFrom(cell)
-          }
-          else {
-            CellsRelation.E :: goTo(CellsRelation.W).myRelationFrom(cell)
-          }
+//          if (dx < 0) {
+//            CellsRelation.W :: goTo(CellsRelation.E).myRelationFrom(cell)
+//          }
+//          else {
+//            CellsRelation.E :: goTo(CellsRelation.W).myRelationFrom(cell)
+//          }
+          List(CellsRelation.SE)
       }
     }
 

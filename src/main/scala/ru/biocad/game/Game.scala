@@ -7,14 +7,16 @@ package ru.biocad.game
  */
 class Game(board : Board) {
   def movement(gs : GameState)(movement : Char) : Option[GameState] = {
-    val direction = Control(movement)
+    val direction = Control.apply(movement)
 
-    val (boardState, wasLocked) = gs.boardState.update(gs.bee.move(direction))
+    val newBee = gs.bee.move(direction)
+    val wasLocked = gs.boardState.isLocked(newBee)
+    val boardState = if (!wasLocked) gs.boardState else gs.boardState.update(gs.bee)
     if (wasLocked && gs.currentBee == gs.beez.length - 1) {
       None
     }
     else {
-      val (bee, currentBee) = if (!wasLocked) (gs.bee, gs.currentBee) else (gs.beez(gs.currentBee + 1), gs.currentBee + 1)
+      val (bee, currentBee) = if (!wasLocked) (newBee, gs.currentBee) else (gs.beez(gs.currentBee + 1), gs.currentBee + 1)
       Some(GameState(boardState, bee, gs.beez, currentBee))
     }
   }
