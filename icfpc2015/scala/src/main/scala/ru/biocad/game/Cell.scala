@@ -47,35 +47,55 @@ case class Cell(x : Int, y : Int) {
 
   def myRelationFrom(cell : Cell) : List[CellsRelation] = {
     val dx = x - cell.x
+
+    meOnDiagFrom(cell) match {
+      case Some(a) => List(a)
+      case None =>
+        if (dx < 0) {
+          CellsRelation.W :: goTo(CellsRelation.E).myRelationFrom(cell)
+        }
+        else {
+          CellsRelation.E :: goTo(CellsRelation.W).myRelationFrom(cell)
+        }
+    }
+  }
+  
+  def meOnDiagFrom(cell : Cell) : Option[CellsRelation] = {
+    val dx = x - cell.x
     val dy = y - cell.y
 
     if (dy == 0 && dx == 0) {
       List.empty[CellsRelation]
     }
     else {
-      if (dy == 0) { // W or E
-        if (dx < 0) { // W
-          List(CellsRelation.W)
+      if (dy == 0) {
+        // W or E
+        if (dx < 0) {
+          // W
+          Some(CellsRelation.W)
         }
-        else { // E
-          List(CellsRelation.E)
+        else {
+          // E
+          Some(CellsRelation.E)
         }
       }
-      else if ((dy > 0) && (dy % 2 == 1 && dy == 2 * dx + 1) || (dy % 2 == 0 && dy == 2 * dx)) { // SE
-        List(CellsRelation.SE)
+      else if ((dy > 0) && (dy % 2 == 1 && dy == 2 * dx + 1) || (dy % 2 == 0 && dy == 2 * dx)) {
+        // SE
+        Some(CellsRelation.SE)
       }
-      else if ((dy < 0) && (dy % 2 == 1 && dy == 2 * dx - 1) || (dy % 2 == 0 && dy == 2 * dx)) { // NW
-        List(CellsRelation.NW)
+      else if ((dy < 0) && (dy % 2 == 1 && dy == 2 * dx - 1) || (dy % 2 == 0 && dy == 2 * dx)) {
+        // NW
+        Some(CellsRelation.NW)
       }
-      else if ((dy > 0) && (dy % 2 == 1 && dy == -dx * 2 - 1) || (dy % 2 == 0 && dy == -dx * 2)) { // SW
-        List(CellsRelation.SW)
+      else if ((dy > 0) && (dy % 2 == 1 && dy == -dx * 2 - 1) || (dy % 2 == 0 && dy == -dx * 2)) {
+        // SW
+        Some(CellsRelation.SW)
       }
-      else if ((dy < 0) && (dy % 2 == 1 && dy == -dx * 2 + 1) || (dy % 2 == 0 && dy == -dx * 2)) { // NE
-        List(CellsRelation.NE)
+      else if ((dy < 0) && (dy % 2 == 1 && dy == -dx * 2 + 1) || (dy % 2 == 0 && dy == -dx * 2)) {
+        // NE
+        Some(CellsRelation.NE)
       }
-      else {
-        ???
-      }
+      else None
     }
   }
 }
