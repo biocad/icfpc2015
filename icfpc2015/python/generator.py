@@ -9,10 +9,15 @@ class Generator(object):
         ulen = len(units)
         result = {}
         for seed in seeds:
-            result[seed] = [units[0]]
             gseed = seed
+            result[seed] = []
             for i in range(length):
-                gseed = (self.multiplier * gseed + self.increment) % self.modulus
                 unit_inx = (gseed >> 16) & 0x7fff % ulen
                 result[seed].append(units[unit_inx])
+                gseed = (self.multiplier * gseed + self.increment) % self.modulus
         return result
+
+if __name__ == "__main__":
+    g = Generator()
+    u = [1,2,3,4,5]
+    print(g.get(u, [17], 10))

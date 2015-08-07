@@ -1,4 +1,6 @@
 Ei!
+"-p"
+-p
 In his house at R'lyeh, dead Cthulhu waits dreaming
 Charybdis
 Scylla

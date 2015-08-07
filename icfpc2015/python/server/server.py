@@ -89,10 +89,14 @@ def get_move():
                    'posY': random.randint(0, 20),
                    'state': 'active' if bool(random.getrandbits(1)) else 'disabled'}
                   for _ in range(20)]
-    return jsonify({'height': 20,
+    response = {'height': 20,
                     'width': 10,
-                    'colored': rand_cells
-                    })
+                    'colored': rand_cells,
+                    'score': random.randint(1, 10000000)
+                    }
+    end = {'end': True}
+    result = end if random.randint(1, 100) == 1 else response
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True)
