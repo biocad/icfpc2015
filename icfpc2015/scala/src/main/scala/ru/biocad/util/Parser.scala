@@ -1,10 +1,12 @@
 package ru.biocad.util
 
 
+import ru.biocad.game.Direction
+
 import scalaz._, Scalaz._
 import argonaut._, Argonaut._
 
-import ru.biocad.game.{Bee, Board, Direction, Cell}
+import ru.biocad.game._
 import ru.biocad.game.Direction._
 
 object Parser {
@@ -40,7 +42,13 @@ case class Problem(height: Int,
                    sourceLength: Int,
                    units: Vector[Bee]) {
 
-  def getBoard = Board(id, width, height)
+  def getGameRules = {
+    val board = Board(id, width, height)
+    val unitWaves = BeeGenerator.generate(units.toArray, sourceSeeds.toArray, sourceLength)
+
+    (board, filled, unitWaves)
+  }
+
 }
 
 
