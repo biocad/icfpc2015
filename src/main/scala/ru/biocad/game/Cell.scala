@@ -20,6 +20,8 @@ case class Cell(x : Int, y : Int) {
       Cell(x - 1, y - 1)
     case Direction.SouthEast =>
       Cell(x + 1, y - 1)
+    case Direction.Nothing =>
+      this
   }
 
   def rotate(pivot : Cell) : Direction => Cell = {

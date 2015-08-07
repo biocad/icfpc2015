@@ -15,4 +15,6 @@ object Direction extends Enumeration {
 
   val RotateClock = Value("rotate-cw")
   val RotateCounterClock = Value("rotate-ccw")
+
+  val Nothing = Value("nothing")
 }
