@@ -1,12 +1,12 @@
 package ru.biocad.search
 
-import ru.biocad.game.Cell
+import ru.biocad.game.{Bee, Cell}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 
-class Problem(val startCell: Cell, val goalCell: Cell) {
+class Problem(val startCell: Cell, val goalCell: Cell, val bee: Bee) {
   def successors(state: Cell): Vector[(Cell, ArrayBuffer[Cell])] = {
     ???
   }
