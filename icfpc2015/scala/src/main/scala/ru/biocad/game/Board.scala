@@ -1,5 +1,8 @@
 package ru.biocad.game
 
+import argonaut.CodecJson
+import scalaz._, Scalaz._
+import argonaut._, Argonaut._
 import ru.biocad.game.Direction.Direction
 
 /**
@@ -7,8 +10,9 @@ import ru.biocad.game.Direction.Direction
  * Date: 07.08.15
  * Time: 19:17
  */
-class Board(id : Int)(val width : Int, val height : Int) {
-  def inBoard(cell : Cell) : Boolean =
+case class Board(id: Int, width: Int, height: Int) {
+
+  def inBoard(cell: Cell): Boolean =
     cell.x >= 0 && cell.x < width && cell.y >= 0 && cell.y < height
 
   def cells: Vector[Cell] = {
@@ -21,11 +25,18 @@ class Board(id : Int)(val width : Int, val height : Int) {
   }
 }
 
-case class BoardState(filled : Vector[Cell])(board : Board) {
-  private def intersects(cell : Cell) : Boolean =
+
+object Board {
+  implicit def BoardCodecJson: CodecJson[Board] =
+    casecodec3(Board.apply, Board.unapply)("id", "width", "height")
+}
+
+
+case class BoardState(filled: Vector[Cell])(board: Board) {
+  private def intersects(cell: Cell): Boolean =
     filled.contains(cell)
 
-  def update(bee : Bee) : BoardState =
+  def update(bee: Bee): BoardState =
     if (bee.members.forall(a => board.inBoard(a) && !intersects(a))) {
       this
     }
@@ -33,7 +44,7 @@ case class BoardState(filled : Vector[Cell])(board : Board) {
       BoardState(filled = newField(bee))(board = board)
     }
 
-  private def newField(bee : Bee) : Vector[Cell] = {
+  private def newField(bee: Bee): Vector[Cell] = {
     (filled ++ bee.members).distinct.groupBy(_.y).flatMap {
       case (_, cells) =>
         Option(cells).filter(_.size < board.width)
@@ -48,7 +59,7 @@ case class BoardState(filled : Vector[Cell])(board : Board) {
     this.update(bee.move(command))
   }
 
-  def dump : String =
+  def dump: String =
     s"""
       |{
       |  "width": ${board.width},
