@@ -4,7 +4,7 @@ package ru.biocad.util
 import scalaz._, Scalaz._
 import argonaut._, Argonaut._
 
-import ru.biocad.game.{Board, Direction, Cell}
+import ru.biocad.game.{Bee, Board, Direction, Cell}
 import ru.biocad.game.Direction._
 
 object Parser {
@@ -32,12 +32,18 @@ object Parser {
 }
 
 
-case class Problem(height: Int, width: Int, id: Int, filled: Vector[Cell])
+case class Problem(height: Int,
+                   width: Int,
+                   id: Int,
+                   filled: Vector[Cell],
+                   sourceSeeds: Vector[Int],
+                   sourceLength: Int,
+                   units: Vector[Bee])
 
 
 object Problem {
   implicit def ProblemCodecJson: CodecJson[Problem] =
-    casecodec4(Problem.apply, Problem.unapply)("height", "width", "id", "filled")
+    casecodec7(Problem.apply, Problem.unapply)("height", "width", "id", "filled", "sourceSeeds", "sourceLength", "units")
 }
 
 
@@ -48,7 +54,39 @@ object ParserTest extends App {
       |  "height": 10,
       |  "width": 10,
       |  "id": 0,
-      |  "filled": [{"x":2,"y":4}]
+      |  "filled": [{"x":2,"y":4}, {"x":3,"y":5}],
+      |  "sourceSeeds": [0, 1],
+      |  "sourceLength": 100,
+      |  "units": [
+      |    {
+      |      "members": [
+      |        {
+      |          "x": 0,
+      |          "y": 0
+      |        }
+      |      ],
+      |      "pivot": {
+      |        "x": 0,
+      |        "y": 0
+      |      }
+      |    },
+      |    {
+      |      "members": [
+      |        {
+      |          "x": 0,
+      |          "y": 0
+      |        },
+      |        {
+      |          "x": 2,
+      |          "y": 0
+      |        }
+      |      ],
+      |      "pivot": {
+      |        "x": 1,
+      |        "y": 0
+      |      }
+      |    }
+      |  ]
       |}
     """.stripMargin
 
