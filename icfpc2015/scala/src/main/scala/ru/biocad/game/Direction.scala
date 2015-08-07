@@ -14,5 +14,5 @@ object Direction extends Enumeration {
   val SouthEast = Value("se")
 
   val RotateClock = Value("rotate-cw")
-  val RotateConterClock = Value("rotate-ccw")
+  val RotateCounterClock = Value("rotate-ccw")
 }

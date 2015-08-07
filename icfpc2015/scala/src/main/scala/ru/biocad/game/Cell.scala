@@ -26,7 +26,7 @@ case class Cell(x : Int, y : Int) {
         case (rel, acc) =>
           acc.goTo(CellsRelation.next(rel))
       }
-    case Direction.RotateConterClock =>
+    case Direction.RotateCounterClock =>
       myRelationFrom(pivot).foldRight(this) {
         case (rel, acc) =>
           acc.goTo(CellsRelation.pred(rel))
