@@ -21,8 +21,8 @@ object Solver {
     } yield {
       s"""
          |{
-         |"posX": ${cell._1.x}
-         |"posY": ${cell._1.y}
+         |"posX": ${cell._1.q}
+         |"posY": ${cell._1.r}
          |"state" ${cell._2}
          |}
        """.stripMargin

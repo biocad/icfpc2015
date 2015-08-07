@@ -15,10 +15,10 @@ case class Bee(members: Vector[Cell], pivot: Cell) {
   }
 
   def width : Int =
-    (members.map(_.x).max - members.map(_.x).min) + 1
+    (members.map(_.q).max - members.map(_.q).min) + 1
 
   def height : Int =
-    (members.map(_.y).max - members.map(_.y).min) + 1
+    (members.map(_.r).max - members.map(_.r).min) + 1
 }
 
 object Bee {

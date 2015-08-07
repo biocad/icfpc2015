@@ -28,8 +28,8 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], curr
       case cell =>
         s"""
           |{
-          |  "posX": ${cell.x},
-          |  "posY": ${cell.y},
+          |  "posX": ${cell.q},
+          |  "posY": ${cell.r},
           |  "state": "disabled"
           |}
         """.stripMargin
@@ -38,8 +38,8 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], curr
       case cell =>
         s"""
            |{
-           |  "posX": ${cell.x},
-           |  "posY": ${cell.y},
+           |  "posX": ${cell.q},
+           |  "posY": ${cell.r},
            |  "state": "active"
            |}
         """.stripMargin

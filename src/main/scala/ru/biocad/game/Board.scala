@@ -13,7 +13,7 @@ import ru.biocad.game.Direction.Direction
 case class Board(id: Int, width: Int, height: Int) {
 
   def inBoard(cell: Cell): Boolean =
-    cell.x >= 0 && cell.x < width && cell.y >= 0 && cell.y < height
+    cell.q >= 0 && cell.q < width && cell.r >= 0 && cell.r < height
 
   def cells: Vector[Cell] = {
     val r = for {
@@ -48,7 +48,7 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
     BoardState(filled = newField(bee))(board = board)
 
   private def newField(bee: Bee): Vector[Cell] = {
-    (filled ++ bee.members).distinct.groupBy(_.y).flatMap {
+    (filled ++ bee.members).distinct.groupBy(_.r).flatMap {
       case (_, cells) =>
         Option(cells).filter(_.size < board.width)
     }.flatten.toVector
