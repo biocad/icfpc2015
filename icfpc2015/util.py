@@ -3,6 +3,8 @@
 """
  Data structures useful for implementing SearchAgents
 """
+import heapq
+
 
 class Stack:
     "A container with a last-in-first-out (LIFO) queuing policy."
