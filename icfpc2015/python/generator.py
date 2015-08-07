@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 class Generator(object):
+    """
+    DONT EVEN THINK OF TOUCHING ME MATAFUKER
+    """
     def __init__(self):
         self.modulus = 2**31
         self.multiplier = 1103515245
@@ -16,8 +19,3 @@ class Generator(object):
                 result[seed].append(units[unit_inx])
                 gseed = (self.multiplier * gseed + self.increment) % self.modulus
         return result
-
-if __name__ == "__main__":
-    g = Generator()
-    u = [1,2,3,4,5]
-    print(g.get(u, [17], 10))
