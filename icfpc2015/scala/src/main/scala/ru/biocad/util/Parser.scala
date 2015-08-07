@@ -38,7 +38,10 @@ case class Problem(height: Int,
                    filled: Vector[Cell],
                    sourceSeeds: Vector[Int],
                    sourceLength: Int,
-                   units: Vector[Bee])
+                   units: Vector[Bee]) {
+
+  def getBoard = Board(id, width, height)
+}
 
 
 object Problem {
