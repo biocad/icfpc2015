@@ -5,7 +5,27 @@ package ru.biocad.game
  * Date: 07.08.15
  * Time: 19:17
  */
-class Board(id : Int)(width : Int, height : Int)(filled : Iterable[Cell]) {
+class Board(id : Int)(val width : Int, val height : Int) {
   def inBoard(cell : Cell) : Boolean =
     cell.x >= 0 && cell.x < width && cell.y >= 0 && cell.y < height
+}
+
+case class BoardState(filled : Vector[Cell])(board : Board) {
+  def intersects(cell : Cell) : Boolean =
+    filled.contains(cell)
+
+  def update(bee : Bee) : BoardState =
+    if (bee.members.forall(a => board.inBoard(a) && !intersects(a))) {
+      this
+    }
+    else {
+      BoardState(filled = newField(bee))
+    }
+
+  def newField(bee : Bee) : Vector[Cell] = {
+    (filled ++ bee.members).distinct.groupBy(_.y).flatMap {
+      case (_, cells) =>
+        Option(cells).filter(_.size < board.width)
+    }.flatten.toVector
+  }
 }
