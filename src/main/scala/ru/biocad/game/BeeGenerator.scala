@@ -25,8 +25,8 @@ class AbsBeeGenerator(board : Board) extends BeeGenerator {
           beez.map {
             case bee =>
               val leftOffset = math.floor((board.width - bee.width) / 2).toInt
-              val members = bee.members.map(member => Cell(x = member.x + leftOffset, y = member.y))
-              val pivot = bee.pivot.copy(x = bee.pivot.x + leftOffset)
+              val members = bee.members.map(member => Cell(q = member.q + leftOffset, r = member.r))
+              val pivot = bee.pivot.copy(q = bee.pivot.q + leftOffset)
               Bee(members, pivot)
           }
       }
