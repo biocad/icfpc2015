@@ -1,15 +1,12 @@
 __author__ = 'pavel'
 
-from collections import namedtuple
+from cell import Cell, dumps_cell
 from movement import Movement, BACKWARD_MAP
-
-
-Memeber = namedtuple('Member', ['x', 'y'])
 
 
 class Unit(object):
     def __init__(self, members, pivot):
-        self.members = members
+        self.members = list(members)
         self.pivot = pivot
 
         self.movement = {
@@ -26,16 +23,16 @@ class Unit(object):
         self.movement[BACKWARD_MAP[c]]()
 
     def move_w(self):
-        pass
+        return Unit(map(lambda member: Cell(member.x - 1, member.y), self.members), self.pivot)
 
     def move_e(self):
-        pass
+        return Unit(map(lambda member: Cell(member.x + 1, member.y), self.members), self.pivot)
 
     def move_sw(self):
-        pass
+        return Unit(map(lambda member: Cell(member.x - 1, member.y - 1), self.members), self.pivot)
 
     def move_se(self):
-        pass
+        return Unit(map(lambda member: Cell(member.x + 1, member.y - 1), self.members), self.pivot)
 
     def rotate_clockwise(self):
         pass
@@ -44,4 +41,7 @@ class Unit(object):
         pass
 
     def nothing(self):
-        pass
+        return self
+
+    def dumps(self):
+        return "%s: [%s]" % (self.pivot, ", ".join(map(dumps_cell, self.members)))
