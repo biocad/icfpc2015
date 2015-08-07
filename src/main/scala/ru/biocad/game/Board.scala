@@ -36,12 +36,12 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
   private def intersects(cell: Cell): Boolean =
     filled.contains(cell)
 
-  def update(bee: Bee): BoardState =
+  def update(bee: Bee): (BoardState, Boolean) =
     if (bee.members.forall(a => board.inBoard(a) && !intersects(a))) {
-      this
+      (this, false)
     }
     else {
-      BoardState(filled = newField(bee))(board = board)
+      (BoardState(filled = newField(bee))(board = board), true)
     }
 
   private def newField(bee: Bee): Vector[Cell] = {
@@ -49,14 +49,6 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
       case (_, cells) =>
         Option(cells).filter(_.size < board.width)
     }.flatten.toVector
-  }
-
-  def initNewBee(bee: Bee): BoardState = {
-    this.update(bee)
-  }
-
-  def getNextState(bee: Bee, command: Direction): BoardState = {
-    this.update(bee.move(command))
   }
 
   def dump: String =
