@@ -1,7 +1,6 @@
-__author__ = 'pavel'
-
-from icfpc2015.cell import Cell, dumps_cell
-from icfpc2015.movement import Movement, BACKWARD_MAP
+# -*- coding: utf-8 -*-
+from icfpc2015.python.cell import Cell, dumps_cell
+from icfpc2015.python.movement import Movement, BACKWARD_MAP
 
 
 class Unit(object):

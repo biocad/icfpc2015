@@ -1,9 +1,8 @@
-__author__ = 'pavel'
-
+# -*- coding: utf-8 -*-
 import sys
-from icfpc2015.cell import Cell
-from icfpc2015.board import Board
-from icfpc2015.unit import Unit
+from icfpc2015.python.cell import Cell
+from icfpc2015.python.board import Board
+from icfpc2015.python.unit import Unit
 
 def parse_cell(json_cell):
     return Cell(x=json_cell['x'], y=json_cell['y'])

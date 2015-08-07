@@ -1,6 +1,4 @@
-__author__ = 'pavel'
-
-
+# -*- coding: utf-8 -*-
 class Game(object):
     def __init__(self, board, units):
         self.board = board

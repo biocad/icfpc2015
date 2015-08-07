@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from icfpc2015 import util
+from icfpc2015.python import util
 
 
 class SearchProblem:
