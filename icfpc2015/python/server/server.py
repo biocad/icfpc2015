@@ -65,14 +65,14 @@ def crossdomain(origin=None, methods=None, headers=None,
 @app.route('/field', methods=['GET'])
 @crossdomain(origin='*')
 def get_field():
-    with open('../../problems/problem_0.json') as fp:
+    with open('/Users/roman/Projects/Biocad/biocad-icfpc/icfpc2015/problems/problem_0.json') as fp:
         json_data = json.load(fp)
         board = parse_board(json_data)
         units = parse_units(json_data)
         game = Game(board=board, units=units)
 
-    return jsonify({'height': game.board.height,
-                    'width': game.board.width,
+    return jsonify({'height': 20,
+                    'width': 10,
                     'colored': []
                     })
 
@@ -80,14 +80,23 @@ def get_field():
 @crossdomain(origin='*')
 def get_move():
     code = request.args.get('code')
-    rand_cells = [{'posX': random.randint(0, game.board.height),
-                   'posY': random.randint(0, game.board.width),
-                   'state': 'active'}
-                  for _ in range(10)]
-    return jsonify({'height': game.board.height,
-                    'width': game.board.width,
-                    'colored': rand_cells
-                    })
+    with open('/Users/roman/Projects/Biocad/biocad-icfpc/icfpc2015/problems/problem_0.json') as fp:
+        json_data = json.load(fp)
+        board = parse_board(json_data)
+        units = parse_units(json_data)
+        game = Game(board=board, units=units)
+    rand_cells = [{'posX': random.randint(0, 10),
+                   'posY': random.randint(0, 20),
+                   'state': 'active' if bool(random.getrandbits(1)) else 'disabled'}
+                  for _ in range(20)]
+    response = {'height': 20,
+                    'width': 10,
+                    'colored': rand_cells,
+                    'score': random.randint(1, 10000000)
+                    }
+    end = {'end': True}
+    result = end if random.randint(1, 100) == 1 else response
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True)
