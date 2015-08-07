@@ -25,4 +25,7 @@ case class Cell(x : Int, y : Int) {
     case Direction.RotateConterClock =>
       ???
   }
+
+  def dumps : String =
+    s"""{"x": $x, "y": $y}"""
 }
