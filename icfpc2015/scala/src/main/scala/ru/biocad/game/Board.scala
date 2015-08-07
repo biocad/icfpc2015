@@ -19,7 +19,7 @@ case class BoardState(filled : Vector[Cell])(board : Board) {
       this
     }
     else {
-      BoardState(filled = newField(bee))
+      BoardState(filled = newField(bee))(board = board)
     }
 
   def newField(bee : Bee) : Vector[Cell] = {
