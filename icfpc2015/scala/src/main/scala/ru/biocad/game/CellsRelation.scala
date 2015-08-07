@@ -14,6 +14,7 @@ object CellsRelation extends Enumeration {
   val E  = Value(4)
   val SE = Value(5)
   val SW = Value(6)
+  val Stop = Value(7)
 
   def next : CellsRelation => CellsRelation = {
     case W => NW

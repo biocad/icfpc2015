@@ -46,26 +46,30 @@ case class Cell(x : Int, y : Int) {
   }
 
   def myRelationFrom(cell : Cell) : List[CellsRelation] = {
-    val dx = x - cell.x
+    def foo(cell : Cell) : List[CellsRelation] = {
+      val dx = x - cell.x
 
-    meOnDiagFrom(cell) match {
-      case Some(a) => List(a)
-      case None =>
-        if (dx < 0) {
-          CellsRelation.W :: goTo(CellsRelation.E).myRelationFrom(cell)
-        }
-        else {
-          CellsRelation.E :: goTo(CellsRelation.W).myRelationFrom(cell)
-        }
+      meOnDiagFrom(cell) match {
+        case Some(a) => List(a)
+        case None =>
+          if (dx < 0) {
+            CellsRelation.W :: goTo(CellsRelation.E).myRelationFrom(cell)
+          }
+          else {
+            CellsRelation.E :: goTo(CellsRelation.W).myRelationFrom(cell)
+          }
+      }
     }
+
+    foo(cell).distinct.filter(_ != CellsRelation.Stop)
   }
   
-  def meOnDiagFrom(cell : Cell) : Option[CellsRelation] = {
+  private def meOnDiagFrom(cell : Cell) : Option[CellsRelation] = {
     val dx = x - cell.x
     val dy = y - cell.y
 
     if (dy == 0 && dx == 0) {
-      List.empty[CellsRelation]
+      Some(CellsRelation.Stop)
     }
     else {
       if (dy == 0) {
