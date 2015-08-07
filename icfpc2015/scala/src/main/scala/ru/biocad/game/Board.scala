@@ -28,4 +28,15 @@ case class BoardState(filled : Vector[Cell])(board : Board) {
         Option(cells).filter(_.size < board.width)
     }.flatten.toVector
   }
+
+  def dumps : String =
+    s"""
+      |{
+      |  "width": ${board.width},
+      |  "height": ${board.height},
+      |  "colored": [
+      |    ${filled.map(_.dumps).mkString(", ")}
+      |  ]
+      |}
+    """.stripMargin
 }
