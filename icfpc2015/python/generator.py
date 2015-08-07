@@ -1,4 +1,4 @@
-from icfpc2015.parser import parse_units
+from icfpc2015.python.parser import parse_units
 import json
 
 class Generator(object):
@@ -20,7 +20,7 @@ class Generator(object):
         return result
 
 if __name__ == "__main__":
-    with open('problems/problem_11.json', "rt") as fd:
+    with open('../problems/problem_11.json', "rt") as fd:
         s = fd.readlines()
     json_data = json.loads("".join(s))
     units = parse_units(json_data)
