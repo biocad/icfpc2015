@@ -92,11 +92,15 @@ class ServiceHolder {
   }
 
   def loadProblems : Map[String, Vector[Int]] = {
-    (0 to 23).map {
+    val res = (0 to 23).map {
       case i =>
-        val rawProblem = scala.io.Source.fromFile(s"problems/problem_$currentGame.json").mkString
+        val rawProblem = scala.io.Source.fromFile(s"problems/problem_$i.json").mkString
         val parsedProblem = Parser.parseProblem(rawProblem)
         s"$i" -> parsedProblem.sourceSeeds
     }.toMap
+
+    println(res)
+
+    res
   }
 }

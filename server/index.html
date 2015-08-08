@@ -40,11 +40,11 @@
         </button>
     </div>
     <script>
+ 
     $(document).ready(function() {
-        var data = {}
         $.get( "http://localhost:5000/problems", function(data) {
-            data = $.parseJSON(data)
-            $.each(data, function(broblemId, seeds) {
+            $data = $.parseJSON(data)
+            $.each($data, function(broblemId, seeds) {
                 $("#problem").append($('<option>', { 
                     text : broblemId 
                 }));
@@ -59,7 +59,7 @@
         });
         $("#problem").change(function() {
             var problemSelected=$(this).val();
-            var seeds = data[problemSelected]
+            var seeds = $data[problemSelected]
             $('#seed')
             .find('option')
             .remove()
