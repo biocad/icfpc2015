@@ -15,11 +15,16 @@ import scala.concurrent.duration._
  * Time: 13:20
  */
 class ServiceHolder {
-  var (game, state) = loadGame("0", 0)
+  var currentGame = "6"
+  var currentSeed = 0
+
+  val problems = loadProblems
+
+  var (game, state) = loadGame
 
   // System
   implicit val system = ActorSystem("honeycomb")
-  val service = system.actorOf(Props(classOf[RESTactor], newGame, update, getSolution), "stateful")
+  val service = system.actorOf(Props(classOf[RESTactor], problems, newGame, update, getSolution), "stateful")
   var solution = ""
 
   implicit val timeout = Timeout(5.seconds)
@@ -36,7 +41,7 @@ class ServiceHolder {
     if(move == 'Ы') {
       println("Ы")
       solution = ""
-      val (gm, s) = loadGame("0", 0)
+      val (gm, s) = loadGame
       game = gm
       state = s
       Some(state)
@@ -59,7 +64,9 @@ class ServiceHolder {
   def newGame : String => Option[GameState] = game_sid => {
     game_sid.split('_') match {
       case Array(g, sid) =>
-        val (gm, s) = loadGame(g, sid.toInt)
+        currentGame = g
+        currentSeed = sid.toInt
+        val (gm, s) = loadGame
         game = gm
         state = s
         solution = ""
@@ -70,13 +77,26 @@ class ServiceHolder {
     }
   }
 
-  def loadGame(gid : String, sid : Int) : (Game, GameState) = {
-    val rawProblem = scala.io.Source.fromFile(s"problems/problem_$gid.json").mkString
+  def loadGame : (Game, GameState) = {
+    val rawProblem = scala.io.Source.fromFile(s"problems/problem_$currentGame.json").mkString
     val parsedProblem = Parser.parseProblem(rawProblem)
+    val seeds = parsedProblem.sourceSeeds
     val (board, filled, beezArray) = parsedProblem.getGameRules
 
-    val beez = beezArray(sid)
-    println(s"Game $gid ($sid) loaded")
+    val beez = (beezArray zip seeds).find(_._2 == currentSeed) match {
+      case Some((bees, _)) => bees
+      case None => throw new RuntimeException("Go to hell!")
+    }
+    println(s"Game $currentGame ($currentSeed) loaded")
     (new Game(board), GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez, currentBee = 0))
+  }
+
+  def loadProblems : Map[String, Vector[Int]] = {
+    (0 to 23).map {
+      case i =>
+        val rawProblem = scala.io.Source.fromFile(s"problems/problem_$currentGame.json").mkString
+        val parsedProblem = Parser.parseProblem(rawProblem)
+        s"$i" -> parsedProblem.sourceSeeds
+    }.toMap
   }
 }
