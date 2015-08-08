@@ -47,7 +47,8 @@ class RESTactor(problems : Map[String, Vector[Int]],
       game_seed =>
         get {
           complete {
-            magic(newGame(game_seed))
+            newGame(game_seed)
+            magic(update('Ы'))
           }
         }
     }

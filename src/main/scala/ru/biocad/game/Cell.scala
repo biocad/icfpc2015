@@ -23,31 +23,50 @@ case class Cell(q : Int, r : Int) {
   }
 
   def rotate(pivot : Cell, dir : Rotation) : Cell = {
-    val cellCube = toCellCube(pivot)
+    val offsetCell = toOffset(pivot)
+    println()
+    println(s"ABS -> OFF: Cell(q=$q, r=$r) -> Cell(q=${offsetCell.q}, r=${offsetCell.r})")
+    val cellCube = offsetCell.toCellCube
+    println(s"OFF -> CUB: Cell(q=${offsetCell.q}, r=${offsetCell.r}) -> Cell(x=${cellCube.x}, y=${cellCube.y}, z=${cellCube.z})")
     dir match {
       case RotateClock =>
-        CellCube(x = -cellCube.z, -cellCube.x, -cellCube.y).toCell(pivot)
+        val roteatedCellCube = CellCube(-cellCube.z, -cellCube.x, -cellCube.y)
+        println(s"ROTATION:   Cube(x=${roteatedCellCube.x}, y=${roteatedCellCube.y}, z=${roteatedCellCube.z})")
+        val rotatedOffsetCell = roteatedCellCube.toCell
+        println(s"CUB -> OFF: Cell(x=${roteatedCellCube.x}, y=${roteatedCellCube.y}, z=${roteatedCellCube.z}) -> Cell(q=${rotatedOffsetCell.q}, r=${rotatedOffsetCell.r})")
+        val rotatedCell = rotatedOffsetCell.fromOffset(pivot)
+        println(s"OFF -> ABS: Cell(q=${rotatedOffsetCell.q}, r=${rotatedOffsetCell.r}) -> Cell(q=${rotatedCell.q}, r=${rotatedCell.r})")
+        println()
+        rotatedCell
       case RotateCounterClock =>
-        CellCube(x = -cellCube.y, -cellCube.z, -cellCube.x).toCell(pivot)
+        CellCube(-cellCube.y, -cellCube.z, -cellCube.x).toCell.fromOffset(pivot)
     }
   }
 
-  def toCellCube : CellCube =
-    CellCube(q, -q-r, r)
+  def toCellCube : CellCube = {
+    val x = q - (r - (r%2)) / 2
+    val z = r
+    val y = -x-z
+    CellCube(x, y, z)
+  }
 
-  def toCellCube(pivot : Cell) : CellCube =
-    Cell(q - pivot.q, r - pivot.r).toCellCube
+  def toOffset(pivot : Cell) : Cell = {
+    Cell(q - pivot.q, r - pivot.r)
+  }
+
+  def fromOffset(pivot : Cell) : Cell = {
+    Cell(q + pivot.q, r + pivot.r)
+  }
 
   def dumps : String =
     s"""{"x": $q, "y": $r}"""
 }
 
 case class CellCube(x : Int, y : Int, z : Int) {
-  def toCell : Cell = Cell(q = x, r = z)
-
-  def toCell(pivot : Cell) : Cell = {
-    val tc = toCell
-    Cell(tc.q + pivot.q, tc.r + pivot.r)
+  def toCell : Cell = {
+    val q = x + (z - (z%2)) / 2
+    val r = z
+    Cell(q, r)
   }
 }
 
