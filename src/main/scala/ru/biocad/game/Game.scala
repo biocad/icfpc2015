@@ -49,7 +49,7 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], curr
            |}
         """.stripMargin
     }.mkString(",\n")
-    val pivot =
+    val pivot = if (bee.members.exists(c => c.r == bee.pivot.r && c.q == bee.pivot.q)) {
       s"""
          |{
          |  "posX": ${bee.pivot.q},
@@ -57,6 +57,17 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], curr
          |  "state": "pivot"
          |}
        """.stripMargin
+    }
+    else {
+      s"""
+         |{
+         |  "posX": ${bee.pivot.q},
+         |  "posY": ${bee.pivot.r},
+         |  "state": "pivot_out"
+         |}
+       """.stripMargin
+    }
+
 
     s"""
       |{
