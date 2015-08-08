@@ -18,7 +18,7 @@ class RESTactor(update : Char => Option[GameState]) extends Actor with HttpServi
     path("field") {
       get {
         complete {
-          update('\n') match {
+          update('Ы') match {
             case Some(st) => st.dumpJson
             case None => "{\"end\": true}"
           }
