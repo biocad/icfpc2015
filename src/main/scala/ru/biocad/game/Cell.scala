@@ -22,31 +22,44 @@ case class Cell(q : Int, r : Int) {
       this
   }
 
+//  def rotate(pivot : Cell, dir : Rotation) : Cell = {
+//    val isOddRow = pivot.r % 2 == 0
+//    val offsetCell = toOffset(pivot)
+//    println()
+//    println(s"ABS -> OFF: Cell(q=$q, r=$r) -> Cell(q=${offsetCell.q}, r=${offsetCell.r})")
+//    val cellCube = offsetCell.toCellCube(isOddRow)
+//    println(s"OFF -> CUB: Cell(q=${offsetCell.q}, r=${offsetCell.r}) -> Cell(x=${cellCube.x}, y=${cellCube.y}, z=${cellCube.z})")
+//    dir match {
+//      case RotateClock =>
+//        val roteatedCellCube = CellCube(-cellCube.z, -cellCube.x, -cellCube.y)
+//        println(s"ROTATION:   Cube(x=${roteatedCellCube.x}, y=${roteatedCellCube.y}, z=${roteatedCellCube.z})")
+//        val rotatedOffsetCell = roteatedCellCube.toCell(isOddRow)
+//        println(s"CUB -> OFF: Cell(x=${roteatedCellCube.x}, y=${roteatedCellCube.y}, z=${roteatedCellCube.z}) -> Cell(q=${rotatedOffsetCell.q}, r=${rotatedOffsetCell.r})")
+//        val rotatedCell = rotatedOffsetCell.fromOffset(pivot)
+//        println(s"OFF -> ABS: Cell(q=${rotatedOffsetCell.q}, r=${rotatedOffsetCell.r}) -> Cell(q=${rotatedCell.q}, r=${rotatedCell.r})")
+//        println()
+//        rotatedCell
+//      case RotateCounterClock =>
+//        CellCube(-cellCube.y, -cellCube.z, -cellCube.x).toCell(isOddRow).fromOffset(pivot)
+//    }
+//  }
+
   def rotate(pivot : Cell, dir : Rotation) : Cell = {
-    val offsetCell = toOffset(pivot)
-    println()
-    println(s"ABS -> OFF: Cell(q=$q, r=$r) -> Cell(q=${offsetCell.q}, r=${offsetCell.r})")
-    val cellCube = offsetCell.toCellCube
-    println(s"OFF -> CUB: Cell(q=${offsetCell.q}, r=${offsetCell.r}) -> Cell(x=${cellCube.x}, y=${cellCube.y}, z=${cellCube.z})")
+    val isOddRow = pivot.r % 2 == 0
+    val cellCube = toOffset(pivot).toCellCube(isOddRow)
     dir match {
       case RotateClock =>
-        val roteatedCellCube = CellCube(-cellCube.z, -cellCube.x, -cellCube.y)
-        println(s"ROTATION:   Cube(x=${roteatedCellCube.x}, y=${roteatedCellCube.y}, z=${roteatedCellCube.z})")
-        val rotatedOffsetCell = roteatedCellCube.toCell
-        println(s"CUB -> OFF: Cell(x=${roteatedCellCube.x}, y=${roteatedCellCube.y}, z=${roteatedCellCube.z}) -> Cell(q=${rotatedOffsetCell.q}, r=${rotatedOffsetCell.r})")
-        val rotatedCell = rotatedOffsetCell.fromOffset(pivot)
-        println(s"OFF -> ABS: Cell(q=${rotatedOffsetCell.q}, r=${rotatedOffsetCell.r}) -> Cell(q=${rotatedCell.q}, r=${rotatedCell.r})")
-        println()
-        rotatedCell
+        cellCube.rotateClock.toCell(isOddRow).fromOffset(pivot)
       case RotateCounterClock =>
-        CellCube(-cellCube.y, -cellCube.z, -cellCube.x).toCell.fromOffset(pivot)
+        cellCube.rotateCounterClock.toCell(isOddRow).fromOffset(pivot)
     }
   }
 
-  def toCellCube : CellCube = {
-    val x = q - (r - (r%2)) / 2
+  def toCellCube(isOddRow : Boolean) : CellCube = {
+    val x = if (isOddRow) q - (r - (r&1)) / 2 else q - (r + (r&1)) / 2
     val z = r
-    val y = -x-z
+    val y = -x - z
+
     CellCube(x, y, z)
   }
 
@@ -63,11 +76,17 @@ case class Cell(q : Int, r : Int) {
 }
 
 case class CellCube(x : Int, y : Int, z : Int) {
-  def toCell : Cell = {
-    val q = x + (z - (z%2)) / 2
+  def toCell(isOddRow : Boolean) : Cell = {
+    val q = if (isOddRow) x + (z - (z&1)) / 2 else x + (z + (z&1)) / 2
     val r = z
     Cell(q, r)
   }
+
+  def rotateClock : CellCube =
+    CellCube(-z, -x, -y)
+
+  def rotateCounterClock : CellCube =
+    CellCube(-y, -z, -x)
 }
 
 
