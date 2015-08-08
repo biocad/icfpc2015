@@ -8,9 +8,60 @@ import scala.collection.mutable.ArrayBuffer
 
 class Problem(val startCell: Cell, val goalCell: Cell, val bee: Bee, val boardState: BoardState) {
   def successors(state: Cell): Vector[(Cell, ArrayBuffer[Move])] = {
-    val allowed = getAllowedMoves(bee, boardState)
-    allowed.toVector
+    ???
   }
+  
+  def moveWithHistory(start: Cell, direction: Direction): (Cell, ArrayBuffer[Direction]) = {
+    (start.move(direction), ArrayBuffer(direction))
+  }
+
+  def rotateWithHistory(start: Cell, direction: Rotation): (Cell, ArrayBuffer[Rotation]) = {
+    (start.rotate(start, direction), ArrayBuffer(direction))
+  }
+
+  def getMoves(bee: Bee, boardState: BoardState, movement: Int) = {
+    
+    val possibleDirections: Vector[Direction] = Vector(
+      West, East, SouthWest, SouthEast
+    )
+    
+    val possibleRotations: Vector[Rotation] = Vector(
+      RotateClock, RotateCounterClock
+    )
+    
+    val start: Cell = bee.pivot
+
+    val visited = new ArrayBuffer[Cell]()
+    val fringes = new ArrayBuffer[Cell]()
+
+    fringes.append(start)
+
+    var k = 0
+    while (k <= movement) {
+
+      fringes.foreach(cube => cube)
+
+      k += 1
+    }
+  }
+
+
+//    function cube_reachable(start, movement):
+  //    var visited = set()
+  //    add start to visited
+  //    var fringes = []
+  //    fringes.append([start])
+//
+//    for each 1 < k ≤ movement:
+//      fringes.append([])
+  //    for each cube in fringes[k-1]:
+    //    for each 0 ≤ dir < 6:
+      //    var neighbor = cube_neighbor(cube, dir)
+      //    if neighbor not in visited, not blocked:
+      //      add neighbor to visited
+      //        fringes[k].append(neighbor)
+//
+//    return visited
 
   def getAllowedMoves(bee: Bee, boardState: BoardState): Array[(Cell, Move)] = {
     Move.all.map{
@@ -71,8 +122,8 @@ object Search {
   }
 
   def uniformCostSearch(problem: Problem): ArrayBuffer[Move] = {
-    implicit val ordering: Ordering[(Cell, ArrayBuffer[Cell], Double)] = new Ordering[(Cell, ArrayBuffer[Cell], Double)] {
-      override def compare(x: (Cell, ArrayBuffer[Cell], Double), y: (Cell, ArrayBuffer[Cell], Double)): Int = {
+    implicit val ordering: Ordering[(Cell, ArrayBuffer[Move], Double)] = new Ordering[(Cell, ArrayBuffer[Move], Double)] {
+      override def compare(x: (Cell, ArrayBuffer[Move], Double), y: (Cell, ArrayBuffer[Move], Double)): Int = {
         x._3 compareTo y._3
       }
     }
