@@ -107,6 +107,7 @@
         }
         function sendKey(key){
             $.get( "http://localhost:5000/move/"+key, function( data ) {
+            	console.log(data)
             	var data = jQuery.parseJSON(data);
                 if (!data.end){
                     svg.selectAll("*").remove();
