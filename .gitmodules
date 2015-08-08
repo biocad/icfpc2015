@@ -1,0 +1,3 @@
+[submodule "AhoCorasickDoubleArrayTrie"]
+	path = AhoCorasickDoubleArrayTrie
+	url = git@github.com:hankcs/AhoCorasickDoubleArrayTrie.git
