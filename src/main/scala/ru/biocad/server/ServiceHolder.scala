@@ -21,7 +21,7 @@ class ServiceHolder(val game : Game, gameState : GameState) {
   val service = system.actorOf(Props(classOf[RESTactor], update), "stateful")
 
   implicit val timeout = Timeout(5.seconds)
-  IO(Http) ! Http.Bind(service, interface = "localhost", port = 8080)
+  IO(Http) ! Http.Bind(service, interface = "localhost", port = 5000)
 
   io.StdIn.readLine()
   system.shutdown()
