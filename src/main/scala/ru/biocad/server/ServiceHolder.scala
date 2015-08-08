@@ -3,7 +3,9 @@ package ru.biocad.server
 import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.util.Timeout
+import ru.biocad.game.{Game, GameState}
 import spray.can.Http
+
 import scala.concurrent.duration._
 
 /**
@@ -11,12 +13,14 @@ import scala.concurrent.duration._
  * Date: 08.08.15
  * Time: 13:20
  */
-class ServiceHolder {
+class ServiceHolder(val game : Game, gameState : GameState) {
+  var state = gameState
+
   // System
   implicit val system = ActorSystem("honeycomb")
-  val service = system.actorOf(Props[RESTactor], "stateful")
+  val service = system.actorOf(Props(classOf[RESTactor], update), "stateful")
 
-  implicit val timeout = Timeout(5.second)
+  implicit val timeout = Timeout(5.seconds)
   IO(Http) ! Http.Bind(service, interface = "localhost", port = 8080)
 
   io.StdIn.readLine()
@@ -24,17 +28,15 @@ class ServiceHolder {
   system.awaitTermination()
 
 
-  //
-  //  private val _game = game
-  //  private var _gameState = gameState
-  //
-  //  def update : Char => Option[GameState] = move => {
-  //    _game.movement(_gameState)(move) match {
-  //      case Some(gs) =>
-  //        _gameState = gs
-  //        Some(_gameState)
-  //      case None =>
-  //        None
-  //    }
-  //  }
+  def update : Char => Option[GameState] = move => {
+    println(s"Update: $move")
+    game.movement(state)(move) match {
+      case Some(gs) =>
+        println(gs)
+        state = gs
+        Some(state)
+      case None =>
+        None
+    }
+  }
 }
