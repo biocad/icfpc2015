@@ -88,7 +88,7 @@ class ServiceHolder {
   }
 
   def loadProblems : Map[String, Vector[Int]] = {
-    val res = (0 to 23).map {
+    val res = (0 to 24).map {
       case i =>
         val rawProblem = scala.io.Source.fromFile(s"problems/problem_$i.json").mkString
         val parsedProblem = Parser.parseProblem(rawProblem)
