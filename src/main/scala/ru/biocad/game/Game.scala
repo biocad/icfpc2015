@@ -17,7 +17,12 @@ class Game(board : Board) {
     }
     else {
       val (bee, currentBee) = if (!wasLocked) (newBee, gs.currentBee) else (gs.beez(gs.currentBee + 1), gs.currentBee + 1)
-      Some(GameState(boardState, bee, gs.beez, currentBee))
+      if (boardState.isLocked(bee)) {
+        None
+      }
+      else {
+        Some(GameState(boardState, bee, gs.beez, currentBee))
+      }
     }
   }
 }

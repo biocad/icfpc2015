@@ -18,7 +18,8 @@ class ServiceHolder(val game : Game, gameState : GameState) {
 
   // System
   implicit val system = ActorSystem("honeycomb")
-  val service = system.actorOf(Props(classOf[RESTactor], update), "stateful")
+  val service = system.actorOf(Props(classOf[RESTactor], update, getSolution), "stateful")
+  var solution = ""
 
   implicit val timeout = Timeout(5.seconds)
   IO(Http) ! Http.Bind(service, interface = "localhost", port = 5000)
@@ -28,9 +29,12 @@ class ServiceHolder(val game : Game, gameState : GameState) {
   system.awaitTermination()
 
 
+  def getSolution : Unit => String = _ => solution
+
   def update : Char => Option[GameState] = move => {
     if(move == 'Ы') {
       println("Ы")
+      solution = ""
       state = gameState
       Some(state)
     }
@@ -39,10 +43,11 @@ class ServiceHolder(val game : Game, gameState : GameState) {
       game.movement(state)(move) match {
         case Some(gs) =>
           println(gs)
+          solution += move
           state = gs
           Some(state)
         case None =>
-          println("End")
+          println(s"End: $solution")
           None
       }
     }
