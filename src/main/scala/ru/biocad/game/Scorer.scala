@@ -4,7 +4,7 @@ object Scorer {
 
   def getScore(currentGameState: GameState, nextGameState: GameState): Long = {
 
-    val size = currentGameState.bee.members.size
+    val size = 1 // currentGameState.bee.members.size
     val currentFilled = currentGameState.boardState.filled.groupBy(c => c.r)
     val nextFilled = nextGameState.boardState.filled.groupBy(c => c.r)
 
