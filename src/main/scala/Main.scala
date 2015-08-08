@@ -21,6 +21,6 @@ object Main extends App {
     val game = new Game(board)
     val initial = GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez, currentBee = 0)
 
-    new ServiceHolder(game, initial)
+    val sh = new ServiceHolder
   }
 }
