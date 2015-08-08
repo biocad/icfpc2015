@@ -84,6 +84,7 @@ $(document).ready(function() {
         var problem = $("#problem").val();
         var seed = $("#seed").val();
         $.get( "http://localhost:5000/game/"+problem+"_"+seed, function(data) {
+            d3.select("#chart").select("svg").remove();
             console.log(data);
             var data = $.parseJSON(data);
             var margin = {
@@ -92,8 +93,8 @@ $(document).ready(function() {
                         bottom: 20,
                         left: 50
                     };
-            var width = 850;
-            var height = 850;
+            var width = 2500;
+            var height = 1600;
 
             var MapColumns = data.width;
             var MapRows = data.height;
