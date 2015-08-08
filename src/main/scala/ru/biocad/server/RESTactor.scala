@@ -9,7 +9,7 @@ import spray.routing._
  * Date: 08.08.15
  * Time: 13:24
  */
-class RESTactor(update : Char => Option[GameState]) extends Actor with HttpService {
+class RESTactor(update : Char => Option[GameState], getSolution : Unit => String) extends Actor with HttpService {
   override def actorRefFactory = context
 
   override def receive = runRoute(myRoute)
@@ -33,6 +33,6 @@ class RESTactor(update : Char => Option[GameState]) extends Actor with HttpServi
 
   def magic : Option[GameState] => String = {
     case Some(st) => st.dumpJson
-    case None => "{\"end\": true}"
+    case None => s"""{"end": true, "solution": "${getSolution()}"}"""
   }
 }
