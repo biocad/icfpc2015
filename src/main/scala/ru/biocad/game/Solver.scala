@@ -1,7 +1,5 @@
 package ru.biocad.game
 
-import ru.biocad.util.Parser
-
 
 object Solver {
 

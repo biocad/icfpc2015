@@ -1,4 +1,4 @@
-import ru.biocad.game.{BoardState, GameState, Game}
+import ru.biocad.game.{BoardState, Game, GameState}
 import ru.biocad.util.Parser
 
 /**

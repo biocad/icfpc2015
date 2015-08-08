@@ -1,13 +1,9 @@
 package ru.biocad.util
 
 
-import ru.biocad.game.Direction
-
-import scalaz._, Scalaz._
-import argonaut._, Argonaut._
-
+import argonaut.Argonaut._
+import argonaut._
 import ru.biocad.game._
-import ru.biocad.game.Direction._
 
 object Parser {
 
@@ -16,19 +12,19 @@ object Parser {
     problem.get
   }
 
-  def parseSoleCommand(c: String): Direction = {
+  def parseSoleCommand(c: String): Move = {
     c match {
-      case _ if c == "W" => Direction.West
-      case _ if c == "E" => Direction.East
-      case _ if c == "SW" => Direction.SouthWest
-      case _ if c == "SE" => Direction.SouthEast
-      case _ if c == "CW" => Direction.RotateClock
-      case _ if c == "CCW" => Direction.RotateCounterClock
+      case _ if c == "W" => West
+      case _ if c == "E" => East
+      case _ if c == "SW" => SouthWest
+      case _ if c == "SE" => SouthEast
+      case _ if c == "CW" => RotateClock
+      case _ if c == "CCW" => RotateCounterClock
       case _ => throw new IllegalArgumentException("NO WAYS TO GO!!! GO HOME AND DIE!!!!")
     }
   }
 
-  def parseString(c: String): Vector[Direction] = {
+  def parseString(c: String): Vector[Move] = {
     c.split(" ").map(parseSoleCommand).toVector
   }
 

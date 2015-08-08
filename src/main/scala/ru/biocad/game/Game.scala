@@ -7,7 +7,7 @@ package ru.biocad.game
  */
 class Game(board : Board) {
   def movement(gs : GameState)(movement : Char) : Option[GameState] = {
-    val direction = Control.apply(movement)
+    val direction = Move(movement)
 
     val newBee = gs.bee.move(direction)
     val wasLocked = gs.boardState.isLocked(newBee)
