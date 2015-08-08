@@ -1,6 +1,7 @@
 package ru.biocad.server
 
 import akka.actor.Actor
+import ru.biocad.game.GameState
 import spray.routing._
 
 /**
@@ -8,7 +9,7 @@ import spray.routing._
  * Date: 08.08.15
  * Time: 13:24
  */
-class RESTactor extends Actor with HttpService {
+class RESTactor(update : Char => Option[GameState]) extends Actor with HttpService {
   override def actorRefFactory = context
 
   override def receive = runRoute(myRoute)
@@ -17,7 +18,10 @@ class RESTactor extends Actor with HttpService {
     path("field") {
       get {
         complete {
-          "hello"
+          update('\n') match {
+            case Some(st) => st.dumpJson
+            case None => "{\"end\": true}"
+          }
         }
       }
     } ~
@@ -25,7 +29,10 @@ class RESTactor extends Actor with HttpService {
       move =>
         get {
           complete {
-            s"move: $move"
+            update(move.head) match {
+              case Some(st) => st.dumpJson
+              case None => "{\"end\": true}"
+            }
           }
         }
     }
