@@ -20,6 +20,7 @@
     <span>]: turn counter-clockwise</span><br>
     <div class="score" style="color:red;"></div>
     <div class="figures" style="color:red;"></div>
+    <div class="recommendation" style="color:red;"></div>
 </div>
 
 <!-- Game Select Box -->
@@ -119,8 +120,10 @@ $(document).ready(function() {
             function appendRule(response){
                 var score = response.score?response.score:0;
                 var figures = response.figures;
+                var recommendation = response.recommendation;
                 $('.score').html('Score: '+score);
                 $('.figures').html('Figures: '+figures);
+                $('.recommendation').html('Recommendation: '+recommendation);
                 svg.append("g")
                         .selectAll(".hexagon")
                         .data(hexbin(points))
@@ -169,6 +172,9 @@ $(document).ready(function() {
                         break;
                     case 91:
                         sendKey('k');
+                        break;
+                    case 13:
+                        sendKey('\t');
                         break;
                 }
                 function sendKey(key){

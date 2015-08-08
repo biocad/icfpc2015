@@ -6,33 +6,41 @@ package ru.biocad.game
  * Time: 19:19
  */
 trait Move {
+  def name : String
   def symbols : String
 }
 
 trait Direction extends Move
 
 object West extends Direction {
+  override def name : String = "W"
   override def symbols : String = "p'!.03"
 }
 object East extends Direction {
+  override def name : String = "E"
   override def symbols : String = "bcefy2"
 }
 object SouthWest extends Direction {
+  override def name : String = "SW"
   override def symbols : String = "aghij4"
 }
 object SouthEast extends Direction {
+  override def name : String = "SE"
   override def symbols : String = "lmno 5"
 }
 object MoveNothing extends Direction {
+  override def name : String = "N"
   override def symbols : String = "\t\r\n"
 }
 
 trait Rotation extends Move
 
 object RotateClock extends Rotation {
+  override def name : String = "RC"
   override def symbols : String = "dqrvz1"
 }
 object RotateCounterClock extends Rotation {
+  override def name : String = "RCC"
   override def symbols : String = "kstuwx"
 }
 

@@ -34,7 +34,10 @@ class Game(board : Board) {
   }
 }
 
-case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], currentBee : Int, previous : List[Bee], score: Long, clearedLines: Long) {
+case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],
+                     currentBee : Int, previous : List[Bee], score: Long,
+                     clearedLines: Long,
+                     recommendation : Array[String] = Array.empty[String]) {
   def dumpJson : String = {
     val disabled = boardState.filled.map {
       case cell =>
@@ -84,7 +87,8 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], curr
       |    ${List(disabled, active, pivot).filter(_.nonEmpty).mkString(",\n")}
       |  ],
       |  "score": $score,
-      |  "figures": ${beez.length - currentBee}
+      |  "figures": ${beez.length - currentBee},
+      |  "recommendation": [${recommendation.map(r => s""""$r"""").mkString(", ")}]
       |}
     """.stripMargin
   }

@@ -46,7 +46,8 @@ class ServiceHolder {
       solution = ""
       val (gm, s) = loadGame
       game = gm
-      state = s
+      val recommendation = optimizer.startingPowers(solution)
+      state = s.copy(recommendation = recommendation)
       Some(state)
     }
     else {
@@ -54,7 +55,8 @@ class ServiceHolder {
       game.movement(state)(move) match {
         case Some(gs) =>
           solution += move
-          state = gs
+          val recommendation = optimizer.startingPowers(solution)
+          state = gs.copy(recommendation = recommendation)
           println(s"Current: $solution")
           Some(state)
         case None =>
