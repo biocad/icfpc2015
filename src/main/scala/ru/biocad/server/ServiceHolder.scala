@@ -62,17 +62,13 @@ class ServiceHolder {
   }
 
   def newGame : String => Option[GameState] = game_sid => {
+    solution = ""
     game_sid.split('_') match {
       case Array(g, sid) =>
         currentGame = g
         currentSeed = sid.toInt
-        val (gm, s) = loadGame
-        game = gm
-        state = s
-        solution = ""
-        Some(state)
+        update('Ы')
       case _ =>
-        solution = ""
         None
     }
   }
