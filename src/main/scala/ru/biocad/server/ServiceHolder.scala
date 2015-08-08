@@ -94,9 +94,6 @@ class ServiceHolder {
         val parsedProblem = Parser.parseProblem(rawProblem)
         s"$i" -> parsedProblem.sourceSeeds
     }.toMap
-
-    println(res)
-
     res
   }
 }
