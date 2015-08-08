@@ -153,28 +153,22 @@ $(document).ready(function() {
             $(document).keypress(function(e) {
                 switch(e.keyCode) {
                     case 100:
-                        var keys = "bcefy2";
-                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
+                        sendKey('b');
                         break;
                     case 97:
-                        var keys = "p'!.03";
-                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
+                        sendKey('p');
                         break;
                     case 122:
-                        var keys = "aghij4";
-                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
+                        sendKey('a');
                         break;
                     case 120:
-                        var keys = "lmno 5";
-                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
+                        sendKey('l');
                         break;
                     case 93:
-                        var keys = "dqrvz1";
-                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
+                        sendKey('d');
                         break;
                     case 91:
-                        var keys = "kstuwx";
-                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
+                        sendKey('k');
                         break;
                 }
                 function sendKey(key){
