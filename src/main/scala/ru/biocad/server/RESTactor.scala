@@ -18,10 +18,7 @@ class RESTactor(update : Char => Option[GameState]) extends Actor with HttpServi
     path("field") {
       get {
         complete {
-          update('Ы') match {
-            case Some(st) => st.dumpJson
-            case None => "{\"end\": true}"
-          }
+          magic(update('Ы'))
         }
       }
     } ~
@@ -29,11 +26,13 @@ class RESTactor(update : Char => Option[GameState]) extends Actor with HttpServi
       move =>
         get {
           complete {
-            update(move.head) match {
-              case Some(st) => st.dumpJson
-              case None => "{\"end\": true}"
-            }
+            magic(update(move.head))
           }
         }
     }
+
+  def magic : Option[GameState] => String = {
+    case Some(st) => st.dumpJson
+    case None => "{\"end\": true}"
+  }
 }
