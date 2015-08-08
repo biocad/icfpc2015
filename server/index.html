@@ -3,127 +3,190 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Honeycomb</title>
-    <div style="position:absolute; left:10px;top:10px;">
-        <span>A: going WEST</span><br>
-        <span>D: going EAST</span><br>
-        <span>Z: going SOUTH-WEST</span><br>
-        <span>X: going SOUTH-EAST</span><br>
-        <span>[: turn clockwise</span><br>
-        <span>]: turn counter-clockwise</span><br>
-    <div class="score" style="color:red;"></div>
-    </div>
-
 </head>
 <body>
-<div id="chart" style="position:absolute; left:50%; margin-left:-460px;">
-</div>
-</body>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js"></script>
 <script src="hexbin.js"></script>
-<script>
-    $.get( "http://127.0.0.1:5000/field", function( data ) {
-      console.log(data);
-      var data = jQuery.parseJSON(data);
-    var margin = {
-                top: 50,
-                right: 20,
-                bottom: 20,
-                left: 50
-            },
-            width = 850,
-            height = 850;
+<script src="test.js"></script>
+<!-- Control Help -->
+<div id="controls-helper" style="left:10px;top:10px;">
+    <span>A: going WEST</span><br>
+    <span>D: going EAST</span><br>
+    <span>Z: going SOUTH-WEST</span><br>
+    <span>X: going SOUTH-EAST</span><br>
+    <span>[: turn clockwise</span><br>
+    <span>]: turn counter-clockwise</span><br>
+<div class="score" style="color:red;"></div>
+</div>
 
-    var MapColumns = data.width,
-            MapRows = data.height;
-
-    var points = [];
-    for (var i = 0; i < MapRows; i++) {
-        for (var j = 0; j < MapColumns; j++) {
-            points.push([20 * j * 1.75, 20 * i * 1.5]);
-        }//for j
-    }//for i
-
-    var svg = d3.select("#chart").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var hexbin = d3.hexbin()
-            .radius(20);
-
-    function appendRule(response){
-        var score = response.score?response.score:0
-        $('.score').html('Score: '+score);
-        svg.append("g")
-                .selectAll(".hexagon")
-                .data(hexbin(points))
-                .enter().append("path")
-                .attr("class", "hexagon")
-                .attr("d", function (d) {
-                    return "M" + d.x + "," + d.y + hexbin.hexagon();
-                })
-                .attr("stroke", "black")
-                .attr("stroke-width", "1px")
-                .style("fill", function(d) {
-                    var color = 'white';
-                    $.each(response.colored, function(a,hex){
-                        if (hex.posX== d.i && hex.posY == d.j){
-                            if (hex.state == 'active') {
-                                color = '#C4EAB5';
-                            } else if(hex.state == 'disabled'){
-                                color = '#B7B5B5';
-                            } else if (hex.state == 'pivot'){
-                                color = '#ff0000';
-                            } else if (hex.state == 'pivot_out') {
-                                color = '#ffaaaa';
-                            }
-                        }
+<!-- Game Select Box -->
+<div id="game-selector" style="left:200px;top:100px;">
+    <!-- Selector Holder -->
+    <div id="problem-selector">
+        <!-- Problem Select Box -->
+        <select width="100", id="problem">
+        </select>
+        <!-- Seed Select Box -->
+        <select width="100", id="seed">
+        </select>
+    </div>
+    
+    <!-- Start Game Button -->
+    <div id="game-starter">
+        <button id="newgame" type="button">
+            Begin New Game
+        </button>
+    </div>
+    <script>
+    $(document).ready(function() {
+        var data = {}
+        $.get( "http://localhost:5000/problems", function(data) {
+            data = $.parseJSON(data)
+            $.each(data, function(broblemId, seeds) {
+                $("#problem").append($('<option>', { 
+                    text : broblemId 
+                }));
+                if( $('#seed').has('option').length == 0 ) {
+                    $.each(seeds, function(index, seed) {
+                        $("#seed").append($('<option>', { 
+                            text : seed 
+                        }));
                     });
-                    return color
-                });
-    }
-    appendRule(data);
-    $(document).keypress(function(e) {
-        var key;
-        switch(e.keyCode) {
-            case 100:
-                sendKey('b');
-                break;
-            case 97:
-                sendKey('p');
-                break;
-            case 122:
-                sendKey('a');
-                break;
-            case 120:
-                sendKey('l');
-                break;
-            case 93:
-                sendKey('d');
-                break;
-            case 91:
-                sendKey('k');
-                break;
-        }
-        function sendKey(key){
-            $.get( "http://127.0.0.1:5000/move/"+key, function( data ) {
-            	console.log(data)
-            	var data = jQuery.parseJSON(data);
-                if (!data.end){
-                    svg.selectAll("*").remove();
-                    appendRule(data);
-                } else {
-                    alert ('Game Over');
-                    console.log(data);
                 }
             });
-            console.log(key);
-        }
-
-    });
-
-    });
+        });
+        $("#problem").change(function() {
+            var problemSelected=$(this).val();
+            var seeds = data[problemSelected]
+            $('#seed')
+            .find('option')
+            .remove()
+            .end();
+            $.each(seeds, function(index, seed) {
+                $("#seed").append($('<option>', { 
+                    text : seed 
+                }));
+            });
+        });
+    }); 
 </script>
+</div>
+<!-- Game Board-->
+<div id="chart" style="position:absolute; left:50%; margin-left:-460px;">
+</div>
+</body>
+
+<script>
+$(document).ready(function() {
+    $("#newgame").click(function() {
+        var problem = $("#problem").val();
+        var seed = $("#seed").val();
+        $.get( "http://localhost:5000/game/"+problem+"_"+seed, function(data) {
+            console.log(data);
+            var data = $.parseJSON(data);
+            var margin = {
+                        top: 50,
+                        right: 20,
+                        bottom: 20,
+                        left: 50
+                    };
+            var width = 850;
+            var height = 850;
+
+            var MapColumns = data.width;
+            var MapRows = data.height;
+
+            var points = [];
+            for (var i = 0; i < MapRows; i++) {
+                for (var j = 0; j < MapColumns; j++) {
+                    points.push([20 * j * 1.75, 20 * i * 1.5]);
+                }
+            }
+
+            var svg = d3.select("#chart").append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var hexbin = d3.hexbin()
+                    .radius(20);
+
+            function appendRule(response){
+                var score = response.score?response.score:0
+                $('.score').html('Score: '+score);
+                svg.append("g")
+                        .selectAll(".hexagon")
+                        .data(hexbin(points))
+                        .enter().append("path")
+                        .attr("class", "hexagon")
+                        .attr("d", function (d) {
+                            return "M" + d.x + "," + d.y + hexbin.hexagon();
+                        })
+                        .attr("stroke", "black")
+                        .attr("stroke-width", "1px")
+                        .style("fill", function(d) {
+                            var color = 'white';
+                            $.each(response.colored, function(a,hex){
+                                if (hex.posX== d.i && hex.posY == d.j){
+                                    if (hex.state == 'active') {
+                                        color = '#C4EAB5';
+                                    } else if(hex.state == 'disabled'){
+                                        color = '#B7B5B5';
+                                    } else if (hex.state == 'pivot'){
+                                        color = '#ff0000';
+                                    } else if (hex.state == 'pivot_out') {
+                                        color = '#ffaaaaz';
+                                    }
+                                }
+                            });
+                            return color
+                        });
+            }
+            appendRule(data);
+            $(document).keypress(function(e) {
+                var key;
+                switch(e.keyCode) {
+                    case 100:
+                        sendKey('b');
+                        break;
+                    case 97:
+                        sendKey('p');
+                        break;
+                    case 122:
+                        sendKey('a');
+                        break;
+                    case 120:
+                        sendKey('l');
+                        break;
+                    case 93:
+                        sendKey('d');
+                        break;
+                    case 91:
+                        sendKey('k');
+                        break;
+                }
+                function sendKey(key){
+                    $.get( "http://localhost:5000/move/"+key, function( data ) {
+                        console.log(data)
+                        var data = jQuery.parseJSON(data);
+                        if (!data.end){
+                            svg.selectAll("*").remove();
+                            appendRule(data);
+                        } else {
+                            alert ('Game Over');
+                            console.log(data);
+                        }
+                    });
+                    console.log(key);
+                }
+            });
+        });
+    });
+});
+</script>
+
+
 </html>
