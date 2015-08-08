@@ -17,14 +17,18 @@ class RESTactor(problems : Map[String, Vector[Int]],
 
   override def receive = runRoute(myRoute)
 
+  val magicString = "{" +
+    problems.map {
+      case (i, s) =>
+        s""" "$i": [${s.mkString(", ")}] """
+    }.mkString(", ") + "}"
+
   val myRoute =
     path("problems") {
       get {
+        println(magicString)
         complete {
-          "{" + problems.map {
-            case (i, s) =>
-              s""" "$i": [${s.mkString(", ")}] """
-          }.mkString(", ") + "}"
+          magicString
         }
       }
     } ~
@@ -47,8 +51,7 @@ class RESTactor(problems : Map[String, Vector[Int]],
       game_seed =>
         get {
           complete {
-            newGame(game_seed)
-            magic(update('Ы'))
+            magic(newGame(game_seed))
           }
         }
     }
