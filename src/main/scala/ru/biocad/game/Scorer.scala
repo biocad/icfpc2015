@@ -2,27 +2,29 @@ package ru.biocad.game
 
 object Scorer {
 
-  def getScore(currentGameState: GameState, nextGameState: GameState): Long = {
+  def getScore(previousGameState: GameState, nextGameState: GameState): (Long, Long) = {
 
-    if (currentGameState.boardState.filled.length != nextGameState.boardState.filled.length) {
-      val size = currentGameState.bee.members.size
-      val currentFilled = currentGameState.boardState.filled.groupBy(c => c.r)
-      val nextFilled = nextGameState.boardState.filled.groupBy(c => c.r)
+    val currentFilled = previousGameState.boardState.filled.groupBy(c => c.r)
+    val nextFilled = nextGameState.boardState.filled.groupBy(c => c.r)
 
-      val currentFilledSize = currentFilled.size
-      val nextFilledSize = nextFilled.size
+    val currentFilledSize = currentFilled.size
+    val nextFilledSize = nextFilled.size
 
-      val ls = math.max(currentFilledSize - nextFilledSize, 0)
+    val ls_old = previousGameState.clearedLines
+    val ls = math.max(currentFilledSize - nextFilledSize, 0)
+
+//    println(s"Lines cleared: ${ls_old} and going to: ${ls}")
+
+    if (previousGameState.boardState.filled.length != nextGameState.boardState.filled.length) {
+      val size = previousGameState.bee.members.size
 
       val points = size + 100 * (1 + ls) * ls / 2
 
-      val ls_old = ls
-
       val lineBonus = if (ls_old > 1) math.floor((ls_old - 1) * points / 10).toLong else 0
 
-      points + lineBonus
+      (points + lineBonus, ls)
     } else {
-      0
+      (0, ls_old)
     }
   }
 
