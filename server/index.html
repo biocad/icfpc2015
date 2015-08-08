@@ -89,26 +89,26 @@
         var key;
         switch(e.keyCode) {
             case 100:
-                sendKey('E');
+                sendKey('b');
                 break;
             case 97:
-                sendKey('W');
+                sendKey('p');
                 break;
             case 122:
-                sendKey('SW');
+                sendKey('a');
                 break;
             case 120:
-                sendKey('SE');
+                sendKey('l');
                 break;
             case 93:
-                sendKey('clockwise');
+                sendKey('d');
                 break;
             case 91:
-                sendKey('counter-clockwise');
+                sendKey('k');
                 break;
         }
         function sendKey(key){
-            $.get( "http://localhost:5000/move?code="+key, function( data ) {
+            $.get( "http://localhost:5000/move/"+key, function( data ) {
                 if (!data.end){
                     svg.selectAll("*").remove();
                     appendRule(data);
