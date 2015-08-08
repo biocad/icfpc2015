@@ -12,23 +12,29 @@ class Game(board : Board) {
     val newBee = gs.bee.move(direction)
     val wasLocked = gs.boardState.isLocked(newBee)
     val boardState = if (!wasLocked) gs.boardState else gs.boardState.update(gs.bee)
+    val newPrevious = if (wasLocked) {
+      List.empty[Bee]
+    }
+    else {
+      newBee :: gs.previous
+    }
     if (wasLocked && gs.currentBee == gs.beez.length - 1) {
       None
     }
     else {
       val (bee, currentBee) = if (!wasLocked) (newBee, gs.currentBee) else (gs.beez(gs.currentBee + 1), gs.currentBee + 1)
-      if (boardState.isLocked(bee)) {
+      if (boardState.isLocked(bee) || gs.previous.contains(newBee)) {
         None
       }
       else {
-        val points = Scorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee))
-        Some(GameState(boardState, bee, gs.beez, currentBee, points + gs.points))
+        val points = Scorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee, newPrevious, 0))
+        Some(GameState(boardState, bee, gs.beez, currentBee, newPrevious, points + gs.score))
       }
     }
   }
 }
 
-case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], currentBee : Int, points: Long = 0) {
+case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], currentBee : Int, previous : List[Bee], score: Long) {
   def dumpJson : String = {
     val disabled = boardState.filled.map {
       case cell =>
@@ -77,7 +83,7 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], curr
       |  "colored": [
       |    ${List(disabled, active, pivot).filter(_.nonEmpty).mkString(",\n")}
       |  ],
-      |  "score": ${points}
+      |  "score": $score
       |}
     """.stripMargin
   }
