@@ -120,10 +120,8 @@ object ParserTest extends App {
     def test2 = {
         val rawProblem = scala.io.Source.fromFile(s"problems/problem_0.json").mkString
         val parsedProblem = Parser.parseProblem(rawProblem)
-//        s"$i" -> parsedProblem.sourceSeeds
 
         println(parsedProblem.asJson.pretty(spaces2))
-        println(parsedProblem.sourceSeeds.asJson.pretty(spaces2))
     }
 
     test2
