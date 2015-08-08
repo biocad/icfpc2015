@@ -1,4 +1,5 @@
 import ru.biocad.game.{BoardState, Game, GameState}
+import ru.biocad.server.ServiceHolder
 import ru.biocad.util.Parser
 
 /**
@@ -16,25 +17,10 @@ object Main extends App {
 
     val (board, filled, beezArray) = parsedProblem.getGameRules
 
-    beezArray.take(1).foreach {
-      case beez =>
-        val game = new Game(board)
-        val initial = GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez, currentBee = 0)
+    val beez = beezArray.head
+    val game = new Game(board)
+    val initial = GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez, currentBee = 0)
 
-        var i = 0
-        "iiiiiiimimiiiiiimmimiiiimimimmimimimimmeemmimimiimmmmimmimiimimimmimmimeee\nmmmimimmimeeemiimiimimimiiiipimiimimmmmeemimeemimimimmmmemimmimmmiiimmmiii\npiimiiippiimmmeemimiipimmimmipppimmimeemeemimiieemimmmm".foldLeft(Option(initial)) {
-          case (st, ch) =>
-            st match {
-              case Some(state) =>
-                i += 1
-                val newState = game.movement(state)(ch)
-                newState
-              case None =>
-                println(i)
-                None
-            }
-        }
-    }
-
+    new ServiceHolder(game, initial)
   }
 }
