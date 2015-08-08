@@ -44,13 +44,21 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], curr
            |}
         """.stripMargin
     }.mkString(",\n")
+    val pivot =
+      s"""
+         |{
+         |  "posX": ${bee.pivot.q},
+         |  "posY": ${bee.pivot.r},
+         |  "state": "pivot"
+         |}
+       """.stripMargin
 
     s"""
       |{
       |  "height": ${boardState.getBoard.height},
       |  "width":  ${boardState.getBoard.width},
       |  "colored": [
-      |    ${List(disabled, active).filter(_.nonEmpty).mkString(",\n")}
+      |    ${List(disabled, active, pivot).filter(_.nonEmpty).mkString(",\n")}
       |  ],
       |  "score": 100500
       |}
