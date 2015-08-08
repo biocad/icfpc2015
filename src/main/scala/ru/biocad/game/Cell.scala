@@ -2,8 +2,6 @@ package ru.biocad.game
 
 import argonaut.Argonaut._
 import argonaut.CodecJson
-import ru.biocad.game.CellsRelation.CellsRelation
-import ru.biocad.game.Direction.Direction
 
 /**
  * User: pavel
@@ -12,24 +10,24 @@ import ru.biocad.game.Direction.Direction
  */
 case class Cell(q : Int, r : Int) {
   def move : Direction => Cell ={
-    case Direction.West =>
+    case West =>
       Cell(q - 1, r)
-    case Direction.East =>
+    case East =>
       Cell(q + 1, r)
-    case Direction.SouthWest =>
+    case SouthWest =>
       Cell(if (r % 2 == 0) q - 1 else q, r + 1)
-    case Direction.SouthEast =>
+    case SouthEast =>
       Cell(if (r % 2 == 0) q else q + 1, r + 1)
-    case Direction.Nothing =>
+    case MoveNothing =>
       this
   }
 
-  def rotate(pivot : Cell, dir : Direction) : Cell = {
+  def rotate(pivot : Cell, dir : Rotation) : Cell = {
     val cellCube = toCellCube(pivot)
     dir match {
-      case Direction.RotateClock =>
+      case RotateClock =>
         CellCube(x = -cellCube.z, -cellCube.x, -cellCube.y).toCell(pivot)
-      case Direction.RotateCounterClock =>
+      case RotateCounterClock =>
         CellCube(x = -cellCube.y, -cellCube.z, -cellCube.x).toCell(pivot)
     }
   }

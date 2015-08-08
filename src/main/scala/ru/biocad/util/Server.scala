@@ -1,8 +1,8 @@
 package ru.biocad.util
 
-import spray.routing.SimpleRoutingApp
-import spray.json.DefaultJsonProtocol
 import akka.actor.ActorSystem
+import spray.json.DefaultJsonProtocol
+import spray.routing.SimpleRoutingApp
 
 case class Foo(a: String, b: Int)
 case class Bar(c: Long, d: String)

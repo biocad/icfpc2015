@@ -1,9 +1,7 @@
 package ru.biocad.game
 
+import argonaut.Argonaut._
 import argonaut.CodecJson
-import scalaz._, Scalaz._
-import argonaut._, Argonaut._
-import ru.biocad.game.Direction.Direction
 
 /**
  * User: pavel
