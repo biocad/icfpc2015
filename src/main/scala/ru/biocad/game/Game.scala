@@ -21,13 +21,14 @@ class Game(board : Board) {
         None
       }
       else {
-        Some(GameState(boardState, bee, gs.beez, currentBee))
+        val points = Scorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee))
+        Some(GameState(boardState, bee, gs.beez, currentBee, points + gs.points))
       }
     }
   }
 }
 
-case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], currentBee : Int) {
+case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], currentBee : Int, points: Long = 0) {
   def dumpJson : String = {
     val disabled = boardState.filled.map {
       case cell =>
@@ -76,7 +77,7 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], curr
       |  "colored": [
       |    ${List(disabled, active, pivot).filter(_.nonEmpty).mkString(",\n")}
       |  ],
-      |  "score": 100500
+      |  "score": ${points}
       |}
     """.stripMargin
   }
