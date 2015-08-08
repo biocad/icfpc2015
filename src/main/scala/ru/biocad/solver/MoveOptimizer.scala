@@ -16,6 +16,12 @@ class MoveOptimizer(powers : Iterator[String]) {
   val powerMoves = powers.map(string2moves).toArray
   println(s"Length of power: ${powerMoves.length}")
 
+  def startingPowers(solution : String) : Iterable[String] = {
+    val moves = string2moves(solution)
+
+    ???
+  }
+
   def optimize(solution : String) : String = {
     val moves = string2moves(solution)
 

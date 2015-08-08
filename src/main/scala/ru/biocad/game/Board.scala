@@ -46,10 +46,22 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
     BoardState(filled = newField(bee))(board = board)
 
   private def newField(bee: Bee): Vector[Cell] = {
-    (filled ++ bee.members).distinct.groupBy(_.r).flatMap {
-      case (_, cells) =>
-        Option(cells).filter(_.size < board.width)
+    var rows = List.empty[Int]
+    val preResult = (filled ++ bee.members).distinct.groupBy(_.r).flatMap {
+      case (i, cells) =>
+        Option(cells).filter(_.size < board.width) match {
+          case Some(c) =>
+            Some(c)
+          case None =>
+            rows = i :: rows
+            None
+        }
     }.flatten.toVector
+
+    rows.foldRight(preResult) {
+      case (row, pred) =>
+        pred.map(cell => if (cell.r < row) cell.copy(r = cell.r + 1) else cell)
+    }
   }
 
   def dump: String =
