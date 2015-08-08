@@ -6,9 +6,10 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 
-class Problem(val startCell: Cell, val goalCell: Cell, val bee: Bee, val boardState: BoardState) {
-  def successors(state: Cell): Vector[(Cell, ArrayBuffer[Move])] = {
-    getMoves(state)
+case class Problem(startCell: Cell, goalCell: Cell, boardState: BoardState) {
+
+  def successors(bee: Cell): Vector[(Cell, ArrayBuffer[Move])] = {
+    getMoves(bee, boardState)
   }
 
   def moveWithHistory(start: Cell, direction: Direction): (Cell, ArrayBuffer[Direction]) = {
@@ -19,11 +20,13 @@ class Problem(val startCell: Cell, val goalCell: Cell, val bee: Bee, val boardSt
     (start.rotate(start, direction), ArrayBuffer(direction))
   }
 
-  def getMoves(start: Cell): Vector[(Cell, ArrayBuffer[Move])] = {
+  def getMoves(start: Cell, boardState: BoardState): Vector[(Cell, ArrayBuffer[Move])] = {
 
     val possibleDirections: Vector[Direction] = Vector(West, East, SouthWest, SouthEast)
 
-    def getNeighbours(cell: Cell): Vector[(Cell, Move)] = possibleDirections.map(d => (cell.move(d), d))
+    def getNeighbours(cell: Cell): Vector[(Cell, Move)] = 
+      possibleDirections.map(d => (cell.move(d), d))
+        .filter { case (c, d) => !boardState.filled.contains(c) }
 
     // 1-deep search
     val deep1 = getNeighbours(start).map(cd => (cd._1, ArrayBuffer(cd._2)))
