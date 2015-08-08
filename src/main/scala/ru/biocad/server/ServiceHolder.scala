@@ -4,10 +4,12 @@ import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.util.Timeout
 import ru.biocad.game.{Bee, BoardState, Game, GameState}
+import ru.biocad.solver.MoveOptimizer
 import ru.biocad.util.Parser
 import spray.can.Http
 
 import scala.concurrent.duration._
+import scala.io.Source
 
 /**
  * User: pavel
@@ -18,6 +20,7 @@ class ServiceHolder {
   var currentGame = "6"
   var currentSeed = 0
 
+  val optimizer = new MoveOptimizer(Source.fromFile("power_phrases.txt").getLines())
   val problems = loadProblems
 
   var (game, state) = loadGame
@@ -56,6 +59,7 @@ class ServiceHolder {
           Some(state)
         case None =>
           println(s"End: $solution$move")
+          optimizer.optimize(solution + move)
           None
       }
     }
