@@ -29,14 +29,22 @@ class ServiceHolder(val game : Game, gameState : GameState) {
 
 
   def update : Char => Option[GameState] = move => {
-    println(s"Update: $move")
-    game.movement(state)(move) match {
-      case Some(gs) =>
-        println(gs)
-        state = gs
-        Some(state)
-      case None =>
-        None
+    if(move == 'Ы') {
+      println("Ы")
+      state = gameState
+      Some(state)
+    }
+    else {
+      println(s"Update: $move")
+      game.movement(state)(move) match {
+        case Some(gs) =>
+          println(gs)
+          state = gs
+          Some(state)
+        case None =>
+          println("End")
+          None
+      }
     }
   }
 }
