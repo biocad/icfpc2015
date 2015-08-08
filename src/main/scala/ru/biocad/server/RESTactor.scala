@@ -27,7 +27,7 @@ class RESTactor(problems : Map[String, Vector[Int]],
           }.mkString(", ") + "}"
         }
       }
-    }
+    } ~
     path("field") {
       get {
         complete {

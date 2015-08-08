@@ -22,8 +22,8 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js"></script>
 <script src="hexbin.js"></script>
 <script>
-    $.get( "http://localhost:5000/field", function( data ) {
-      console.log(data)
+    $.get( "http://127.0.0.1:5000/field", function( data ) {
+      console.log(data);
       var data = jQuery.parseJSON(data);
     var margin = {
                 top: 50,
@@ -108,7 +108,7 @@
                 break;
         }
         function sendKey(key){
-            $.get( "http://localhost:5000/move/"+key, function( data ) {
+            $.get( "http://127.0.0.1:5000/move/"+key, function( data ) {
             	console.log(data)
             	var data = jQuery.parseJSON(data);
                 if (!data.end){
