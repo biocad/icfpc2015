@@ -18,7 +18,8 @@
     <span>X: going SOUTH-EAST</span><br>
     <span>[: turn clockwise</span><br>
     <span>]: turn counter-clockwise</span><br>
-<div class="score" style="color:red;"></div>
+    <div class="score" style="color:red;"></div>
+    <div class="figures" style="color:red;"></div>
 </div>
 
 <!-- Game Select Box -->
@@ -43,7 +44,7 @@
  
     $(document).ready(function() {
         $.get( "http://localhost:5000/problems", function(data) {
-            $data = $.parseJSON(data)
+            $data = $.parseJSON(data);
             $.each($data, function(broblemId, seeds) {
                 $("#problem").append($('<option>', { 
                     text : broblemId 
@@ -116,8 +117,10 @@ $(document).ready(function() {
                     .radius(20);
 
             function appendRule(response){
-                var score = response.score?response.score:0
+                var score = response.score?response.score:0;
+                var figures = response.figures;
                 $('.score').html('Score: '+score);
+                $('.figures').html('Figures: '+figures);
                 svg.append("g")
                         .selectAll(".hexagon")
                         .data(hexbin(points))
@@ -148,25 +151,30 @@ $(document).ready(function() {
             }
             appendRule(data);
             $(document).keypress(function(e) {
-                var key;
                 switch(e.keyCode) {
                     case 100:
-                        sendKey('b');
+                        var keys = "bcefy2";
+                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
                         break;
                     case 97:
-                        sendKey('p');
+                        var keys = "p'!.03";
+                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
                         break;
                     case 122:
-                        sendKey('a');
+                        var keys = "aghij4";
+                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
                         break;
                     case 120:
-                        sendKey('l');
+                        var keys = "lmno 5";
+                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
                         break;
                     case 93:
-                        sendKey('d');
+                        var keys = "dqrvz1";
+                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
                         break;
                     case 91:
-                        sendKey('k');
+                        var keys = "kstuwx";
+                        sendKey(keys.charAt(Math.floor(Math.random() * 6)));
                         break;
                 }
                 function sendKey(key){

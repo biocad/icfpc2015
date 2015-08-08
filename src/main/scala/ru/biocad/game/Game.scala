@@ -83,7 +83,8 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee], curr
       |  "colored": [
       |    ${List(disabled, active, pivot).filter(_.nonEmpty).mkString(",\n")}
       |  ],
-      |  "score": $score
+      |  "score": $score,
+      |  "figures": ${beez.length - currentBee}
       |}
     """.stripMargin
   }
