@@ -62,12 +62,7 @@ def crossdomain(origin=None, methods=None, headers=None,
 @app.route('/field', methods=['GET'])
 @crossdomain(origin='*')
 def get_field():
-    with open('/Users/roman/Projects/Biocad/biocad-icfpc/icfpc2015/problems/problem_0.json') as fp:
-        json_data = json.load(fp)
-        board = parse_board(json_data)
-        units = parse_units(json_data)
-        game = Game(board=board, units=units)
-
+    # call scala service
     return jsonify({'height': 20,
                     'width': 10,
                     'colored': []
@@ -76,12 +71,7 @@ def get_field():
 @app.route('/move', methods=['GET'])
 @crossdomain(origin='*')
 def get_move():
-    code = request.args.get('code')
-    with open('/Users/roman/Projects/Biocad/biocad-icfpc/icfpc2015/problems/problem_0.json') as fp:
-        json_data = json.load(fp)
-        board = parse_board(json_data)
-        units = parse_units(json_data)
-        game = Game(board=board, units=units)
+    # call scala service
     rand_cells = [{'posX': random.randint(0, 10),
                    'posY': random.randint(0, 20),
                    'state': 'active' if bool(random.getrandbits(1)) else 'disabled'}
