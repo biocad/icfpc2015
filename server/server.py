@@ -71,16 +71,18 @@ def get_field():
 @app.route('/move', methods=['GET'])
 @crossdomain(origin='*')
 def get_move():
+    # hextetris -move sw -> next board
+    # hextetris -new - > new board
     # call scala service
     rand_cells = [{'posX': random.randint(0, 10),
                    'posY': random.randint(0, 20),
                    'state': 'active' if bool(random.getrandbits(1)) else 'disabled'}
                   for _ in range(20)]
     response = {'height': 20,
-                    'width': 10,
-                    'colored': rand_cells,
-                    'score': random.randint(1, 10000000)
-                    }
+                'width': 10,
+                'colored': rand_cells,
+                'score': random.randint(1, 10000000)
+                }
     end = {'end': True}
     result = end if random.randint(1, 100) == 1 else response
     return jsonify(result)
