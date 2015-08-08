@@ -3,7 +3,7 @@ package ru.biocad.server
 import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.util.Timeout
-import ru.biocad.game.{BoardState, Game, GameState}
+import ru.biocad.game.{Bee, BoardState, Game, GameState}
 import ru.biocad.util.Parser
 import spray.can.Http
 
@@ -84,7 +84,8 @@ class ServiceHolder {
       case None => throw new RuntimeException("Go to hell!")
     }
     println(s"Game $currentGame ($currentSeed) loaded")
-    (new Game(board), GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez, currentBee = 0))
+    (new Game(board), GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez,
+      currentBee = 0, previous = List.empty[Bee], score = 0))
   }
 
   def loadProblems : Map[String, Vector[Int]] = {
