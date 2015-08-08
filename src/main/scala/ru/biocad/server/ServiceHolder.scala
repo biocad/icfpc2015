@@ -55,7 +55,7 @@ class ServiceHolder {
           println(s"Current: $solution")
           Some(state)
         case None =>
-          println(s"End: $solution")
+          println(s"End: $solution$move")
           None
       }
     }
