@@ -8,7 +8,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class Problem(val startCell: Cell, val goalCell: Cell, val bee: Bee, val boardState: BoardState) {
   def successors(state: Cell): Vector[(Cell, ArrayBuffer[Move])] = {
-    ???
+    getMoves(state)
   }
   
   def moveWithHistory(start: Cell, direction: Direction): (Cell, ArrayBuffer[Direction]) = {
@@ -19,30 +19,14 @@ class Problem(val startCell: Cell, val goalCell: Cell, val bee: Bee, val boardSt
     (start.rotate(start, direction), ArrayBuffer(direction))
   }
 
-  def getMoves(bee: Bee, boardState: BoardState, movement: Int) = {
+  def getMoves(start: Cell): Vector[(Cell, ArrayBuffer[Move])] = {
     
-    val possibleDirections: Vector[Direction] = Vector(
-      West, East, SouthWest, SouthEast
-    )
-    
-    val possibleRotations: Vector[Rotation] = Vector(
-      RotateClock, RotateCounterClock
-    )
-    
-    val start: Cell = bee.pivot
+    val possibleDirections: Vector[Direction] = Vector(West, East, SouthWest, SouthEast)
 
-    val visited = new ArrayBuffer[Cell]()
-    val fringes = new ArrayBuffer[Cell]()
+    def getNeighbours(cell: Cell): Vector[(Cell, Move)] = possibleDirections.map(d => (cell.move(d), d))
 
-    fringes.append(start)
-
-    var k = 0
-    while (k <= movement) {
-
-      fringes.foreach(cube => cube)
-
-      k += 1
-    }
+    // 1-deep search
+    getNeighbours(start).map(cd => (cd._1, ArrayBuffer(cd._2)))
   }
 
 
