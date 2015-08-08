@@ -50,9 +50,9 @@ class ServiceHolder {
       println(s"Update: $move")
       game.movement(state)(move) match {
         case Some(gs) =>
-          println(gs)
           solution += move
           state = gs
+          println(s"Current: $solution")
           Some(state)
         case None =>
           println(s"End: $solution")

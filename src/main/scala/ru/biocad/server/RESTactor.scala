@@ -26,7 +26,6 @@ class RESTactor(problems : Map[String, Vector[Int]],
   val myRoute =
     path("problems") {
       get {
-        println(magicString)
         complete {
           magicString
         }
