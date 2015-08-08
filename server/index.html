@@ -21,10 +21,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js"></script>
 <script src="hexbin.js"></script>
-<script src="json.js"></script>
 <script>
     $.get( "http://localhost:5000/field", function( data ) {
       console.log(data)
+      var data = jQuery.parseJSON(data);
     var margin = {
                 top: 50,
                 right: 20,
@@ -36,8 +36,6 @@
 
     var MapColumns = data.width,
             MapRows = data.height;
-            //colored = json.colored,
-            //colored2 = json2.colored;
 
     var points = [];
     for (var i = 0; i < MapRows; i++) {
@@ -109,6 +107,7 @@
         }
         function sendKey(key){
             $.get( "http://localhost:5000/move/"+key, function( data ) {
+            	var data = jQuery.parseJSON(data);
                 if (!data.end){
                     svg.selectAll("*").remove();
                     appendRule(data);
