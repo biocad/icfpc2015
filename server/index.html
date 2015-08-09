@@ -10,73 +10,76 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js"></script>
 <script src="hexbin.js"></script>
 <script src="test.js"></script>
-<!-- Control Help -->
-<div id="controls-helper" style="left:10px;top:10px;">
-    <span>A: going WEST</span><br>
-    <span>D: going EAST</span><br>
-    <span>Z: going SOUTH-WEST</span><br>
-    <span>X: going SOUTH-EAST</span><br>
-    <span>[: turn clockwise</span><br>
-    <span>]: turn counter-clockwise</span><br>
-    <div class="score" style="color:red;"></div>
-    <div class="figures" style="color:red;"></div>
-    <!--<div class="recommendation" style="color:red;"></div>-->
-</div>
+<div id="game" style="overflow: scroll;">
+	<div id="info" style="width: 220px;float: left;">
+		<!-- Control Help -->
+		<div id="controls-helper">
+		    <span>A: going WEST</span><br>
+		    <span>D: going EAST</span><br>
+		    <span>Z: going SOUTH-WEST</span><br>
+		    <span>X: going SOUTH-EAST</span><br>
+		    <span>[: turn counter-clockwise</span><br>
+		    <span>]: turn clockwise</span><br>
+		    <div class="score" style="color:red;"></div>
+		    <div class="figures" style="color:red;"></div>
+		    <!--<div class="recommendation" style="color:red;"></div>-->
+		</div>
 
-<!-- Game Select Box -->
-<div id="game-selector" style="left:200px;top:100px;">
-    <!-- Selector Holder -->
-    <div id="problem-selector">
-        <!-- Problem Select Box -->
-        <select width="100", id="problem">
-        </select>
-        <!-- Seed Select Box -->
-        <select width="100", id="seed">
-        </select>
-    </div>
-    
-    <!-- Start Game Button -->
-    <div id="game-starter">
-        <button id="newgame" type="button">
-            Begin New Game
-        </button>
-    </div>
-    <script>
- 
-    $(document).ready(function() {
-        $.get( "http://localhost:5000/problems", function(data) {
-            $data = $.parseJSON(data);
-            $.each($data, function(broblemId, seeds) {
-                $("#problem").append($('<option>', { 
-                    text : broblemId 
-                }));
-                if( $('#seed').has('option').length == 0 ) {
-                    $.each(seeds, function(index, seed) {
-                        $("#seed").append($('<option>', { 
-                            text : seed 
-                        }));
-                    });
-                }
-            });
-        });
-        $("#problem").change(function() {
-            var problemSelected=$(this).val();
-            var seeds = $data[problemSelected]
-            $('#seed')
-            .find('option')
-            .remove()
-            .end();
-            $.each(seeds, function(index, seed) {
-                $("#seed").append($('<option>', { 
-                    text : seed 
-                }));
-            });
-        });
-    }); 
-</script>
-</div>
-<!-- Game Board-->
-<div id="chart" style="position:absolute; left:50%; margin-left:-460px;">
+		<!-- Game Select Box -->
+		<div id="game-selector" style="left:200px;top:100px;float: left;">
+		    <!-- Selector Holder -->
+		    <div id="problem-selector">
+		        <!-- Problem Select Box -->
+		        <select id="problem" style="width:100px;">
+		        </select>
+		        <!-- Seed Select Box -->
+		        <select id="seed" style="width:100px">
+		        </select>
+		    </div>
+		    
+		    <!-- Start Game Button -->
+		    <div id="game-starter">
+		        <button id="newgame" type="button" style="width:200px;overflow: scroll;">
+		            Begin New Game
+		        </button>
+		    </div>
+		    <script>
+		    $(document).ready(function() {
+		        $.get( "http://localhost:5000/problems", function(data) {
+		            $data = $.parseJSON(data);
+		            $.each($data, function(broblemId, seeds) {
+		                $("#problem").append($('<option>', { 
+		                    text : broblemId 
+		                }));
+		                if( $('#seed').has('option').length == 0 ) {
+		                    $.each(seeds, function(index, seed) {
+		                        $("#seed").append($('<option>', { 
+		                            text : seed 
+		                        }));
+		                    });
+		                }
+		            })
+		        });
+		        $("#problem").change(function() {
+		            var problemSelected=$(this).val();
+		            var seeds = $data[problemSelected]
+		            $('#seed')
+		            .find('option')
+		            .remove()
+		            .end();
+		            $.each(seeds, function(index, seed) {
+		                $("#seed").append($('<option>', { 
+		                    text : seed 
+		                }));
+		            });
+		        });
+		    }); 
+			</script>
+		</div>
+	</div>
+	<!-- Game Board-->
+	<div id="chart" style="float:left">
+	</div>
 </div>
 </body>
 
@@ -154,47 +157,51 @@ $(document).ready(function() {
             }
             appendRule(data);
             $(document).keypress(function(e) {
-                switch(e.keyCode) {
-                    case 100:
-                        sendKey('b');
-                        break;
-                    case 97:
-                        sendKey('p');
-                        break;
-                    case 122:
-                        sendKey('a');
-                        break;
-                    case 120:
-                        sendKey('l');
-                        break;
-                    case 93:
-                        sendKey('d');
-                        break;
-                    case 91:
-                        sendKey('k');
-                        break;
-                    case 13:
-                        sendKey('\t');
-                        break;
-                }
-                function sendKey(key){
-                    $.get( "http://localhost:5000/move/"+key, function( data ) {
-                        console.log(data)
-                        var data = jQuery.parseJSON(data);
-                        if (!data.end){
-                            svg.selectAll("*").remove();
-                            appendRule(data);
-                        } else {
-                            alert ('Game Over');
-                            console.log(data);
-                        }
-                    });
-                    console.log(key);
-                }
-            });
+		    switch(e.keyCode) {
+		        case 100:
+		            sendKey('b');
+		            break;
+		        case 97:
+		            sendKey('p');
+		            break;
+		        case 122:
+		            sendKey('a');
+		            break;
+		        case 120:
+		            sendKey('l');
+		            break;
+		        case 93:
+		            sendKey('d');
+		            break;
+		        case 91:
+		            sendKey('k');
+		            break;
+		        case 13:
+		            sendKey('\t');
+		            break; 
+		        case 115:
+			        sendKey('s');
+			        break;
+		    }
+		    function sendKey(key){
+		        $.get( "http://localhost:5000/move/"+key, function( data ) {
+		            console.log(data)
+		            var data = jQuery.parseJSON(data);
+		            if (!data.end){
+		                svg.selectAll("*").remove();
+		                appendRule(data);
+		            } else {
+		                alert ('Game Over');
+		                console.log(data);
+		            }
+		        });
+		        console.log(key);
+		    }
+		});
         });
     });
 });
+
 </script>
 
 
