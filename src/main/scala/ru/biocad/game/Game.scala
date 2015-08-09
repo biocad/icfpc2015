@@ -84,7 +84,7 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],
       |    ${List(disabled, active, pivot).filter(_.nonEmpty).mkString(",\n")}
       |  ],
       |  "score": $score,
-      |  "figures": ${beez.length - currentBee},
+      |  "figures": ${beez.length - currentBee}
       |}
     """.stripMargin
   }
