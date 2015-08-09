@@ -15,8 +15,10 @@ class StringChanger(powers : Iterator[String]) {
   println(s"Length of power: ${powerMoves.length}")
 
   def apply(solution : String) : String = {
-    val cannonical = string2cannonical(solution)
-    cannonical
+    powerMoves.zipWithIndex.sortBy(_._1.length).foldRight(string2cannonical(solution)) {
+      case ((power, i), pred) =>
+        if (pred.contains(power)) pred.replace(power, powerStrings(i)) else pred
+    }
   }
 
   private def string2cannonical(power : String) : String =

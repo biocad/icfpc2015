@@ -2,7 +2,7 @@ import breeze.linalg.{norm, DenseVector}
 import breeze.optimize.{LBFGS, DiffFunction}
 import ru.biocad.game._
 import ru.biocad.server.{Submiter, ServiceHolder}
-import ru.biocad.solver.Weights
+import ru.biocad.solver.{StringChanger, Weights}
 
 /**
  * User: pavel
@@ -29,6 +29,8 @@ object Gambler extends App {
     val scorer = new ru.biocad.solver.Scorer(weights)
     val gp = new GamePlayer(scorer, depth)
 
+    val stringOptimizer =
+      new StringChanger(scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"power_phrases.txt")).getLines())
     val gameState = gp.startNewGame(problem, seed)
 
     @annotation.tailrec
@@ -40,7 +42,7 @@ object Gambler extends App {
 
     val (finalScore, solution) = playState(gp.state, gp.moveItPlease(), 0)
 
-    (finalScore, solution)
+    (finalScore, stringOptimizer(solution))
   }
 
   override def main (args: Array[String]) {
