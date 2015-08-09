@@ -39,8 +39,6 @@ object Gambler extends App {
       }
 
     val (finalScore, solution) = playState(gp.state, gp.moveItPlease(), 0)
-    // println(s"Solution: ${solution}")
-    // println(s"Game score: ${finalScore}")
 
     (finalScore, solution)
   }
