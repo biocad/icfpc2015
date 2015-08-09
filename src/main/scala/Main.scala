@@ -66,7 +66,7 @@ object Gambler extends App {
       val seed = g._1
       val solution = g._2
       val score = g._3
-      submitter.submitIfCool(problem, seed, solution, score)
+      println(s"Submiter answer: ${submitter.submitIfCool(problem, seed, solution, score)}")
       println(s"Submitted problem #$problem seed: $seed, score: $score")
     }
   }

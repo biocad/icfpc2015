@@ -73,8 +73,8 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
       .auth(user = "", password = token)
       .header("Content-Type", "application/json")
       .postData(formatPost(task, seed, solution, score))
-    println("Something happend")
-    201
+      .asString
+      .code
   }
 
   private def formatPost(task : Int, seed : Int, solution : String, score : Int) : String =
@@ -87,7 +87,4 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
       |  }
       |]
     """.stripMargin
-
-  implicit def problem2double(p : Problem) : Double =
-    p.task + p.seed / 1000000
 }
