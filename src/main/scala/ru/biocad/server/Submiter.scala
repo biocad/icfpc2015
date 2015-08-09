@@ -5,6 +5,8 @@ import java.io.{File, PrintWriter}
 import argonaut.CodecJson
 import argonaut._
 import Argonaut._
+import ch.qos.logback.classic.Level
+import org.slf4j.LoggerFactory
 
 import scala.io.Source
 

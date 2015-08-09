@@ -46,7 +46,7 @@ object Gambler extends App {
   override def main (args: Array[String]) {
 
     val problem = 3
-    val seeds = List(0,29060,6876,31960,6094)
+    val seeds = List(0, 29060, 6876, 31960, 6094)
 
     val bestOfTheBest = seeds.map { case seed =>
       val games = (0 to 0).par.map(i => {
