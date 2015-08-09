@@ -10,7 +10,7 @@ import ru.biocad.game.{Cell, GameState, EndState}
 
 case class Weights(
                   ca: Double = 1,     // locked cells around bee
-                  cw: Double = -5,     // locked cells around walls
+                  cw: Double = -4,     // locked cells around walls
                   cf: Double = 5,     // locked cells around floor
                   uc: Double = -10,     // unreachable cells
                   bl: Double = 100,     // cleared lines
