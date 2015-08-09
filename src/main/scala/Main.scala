@@ -24,8 +24,6 @@ object Main extends App {
 
 object Gambler extends App {
 
-  val submitter = new Submiter()
-
   def playGame(problem: Int, seed: Int, depth: Int, depthStep: Int): (Int, String) = {
     val weights = new Weights(-1, 2) // new Weights(-1, 2)
     val scorer = new ru.biocad.solver.Scorer(weights)
@@ -53,18 +51,23 @@ object Gambler extends App {
     val seeds = List(0, 679, 13639, 13948, 29639, 15385, 16783, 23862, 25221, 23027)
 
     val bestOfTheBest = seeds.map { case seed =>
-      val games = (0 to 10).par.map(i => {
+      val games = (0 to 0).par.map(i => {
         playGame(0, 0, 6, 6)
       })
-      val bestGame = games.maxBy(g => g._1)
-      println(s"Problem: $problem, Seed: $seed, Score: ${bestGame._1} | Solution: ${bestGame._2}")
-      (seed, bestGame._2, bestGame._1)
+      val (score, solution) = games.maxBy(g => g._1)
+      println(s"Problem: $problem, Seed: $seed, Score: ${score} | Solution: ${solution}")
+      (seed, solution, score)
     }
 
     for {
       g <- bestOfTheBest
     } yield {
-      submitter.submitIfCool(problem, g._1, g._2, g._1)
+      val submitter = new Submiter()
+      val seed = g._1
+      val solution = g._2
+      val score = g._3
+      submitter.submitIfCool(problem, g._1, g._2, g._3)
+      println(s"Submitted problem #${problem} seed: ${seed}, score: ${score}")
     }
   }
 
