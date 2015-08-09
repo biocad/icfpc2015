@@ -6,9 +6,7 @@ package ru.biocad.game
  * Time: 1:31
  */
 class Game(board : Board) {
-  def movement(gs : GameState)(movement : Char) : Option[GameState] = {
-    val direction = Move(movement)
-
+  def movement(gs : GameState)(direction : Move) : Option[GameState] = {
     val newBee = gs.bee.move(direction)
     val wasLocked = gs.boardState.isLocked(newBee)
     val boardState = if (!wasLocked) gs.boardState else gs.boardState.update(gs.bee)
@@ -36,8 +34,7 @@ class Game(board : Board) {
 
 case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],
                      currentBee : Int, previous : List[Bee], score: Long,
-                     clearedLines: Long,
-                     recommendation : Array[String] = Array.empty[String]) {
+                     clearedLines: Long) {
   def dumpJson : String = {
     val disabled = boardState.filled.map {
       case cell =>
@@ -88,7 +85,6 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],
       |  ],
       |  "score": $score,
       |  "figures": ${beez.length - currentBee},
-      |  "recommendation": [${recommendation.map(r => s""""$r"""").mkString(", ")}]
       |}
     """.stripMargin
   }

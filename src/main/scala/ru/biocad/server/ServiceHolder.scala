@@ -3,13 +3,11 @@ package ru.biocad.server
 import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.util.Timeout
-import ru.biocad.game.{Bee, BoardState, Game, GameState}
-import ru.biocad.solver.MoveOptimizer
+import ru.biocad.game._
 import ru.biocad.util.Parser
 import spray.can.Http
 
 import scala.concurrent.duration._
-import scala.io.Source
 
 /**
  * User: pavel
@@ -20,7 +18,7 @@ class ServiceHolder {
   var currentGame = "6"
   var currentSeed = 0
 
-  val optimizer = new MoveOptimizer(Source.fromFile("power_phrases.txt").getLines())
+//  val optimizer = new MoveOptimizer(Source.fromFile("power_phrases.txt").getLines())
   val problems = loadProblems
 
   var (game, state) = loadGame
@@ -46,22 +44,24 @@ class ServiceHolder {
       solution = ""
       val (gm, s) = loadGame
       game = gm
-      val recommendation = optimizer.startingPowers(solution)
-      state = s.copy(recommendation = recommendation)
+//      val recommendation = optimizer.startingPowers(solution)
+//      state = s.copy(recommendation = recommendation)
+      state = s
       Some(state)
     }
     else {
       println(s"Update: $move")
-      game.movement(state)(move) match {
+      game.movement(state)(Move(move)) match {
         case Some(gs) =>
           solution += move
-          val recommendation = optimizer.startingPowers(solution)
-          state = gs.copy(recommendation = recommendation)
+//          val recommendation = optimizer.startingPowers(solution)
+//          state = gs.copy(recommendation = recommendation)
+          state = gs
           println(s"Current: $solution")
           Some(state)
         case None =>
           println(s"End: $solution$move")
-          optimizer.optimize(solution + move)
+//          optimizer.optimize(solution + move)
           None
       }
     }

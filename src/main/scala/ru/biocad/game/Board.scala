@@ -58,7 +58,7 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
         }
     }.flatten.toVector
 
-    rows.foldRight(preResult) {
+    rows.sortBy(-_).foldRight(preResult) {
       case (row, pred) =>
         pred.map(cell => if (cell.r < row) cell.copy(r = cell.r + 1) else cell)
     }
