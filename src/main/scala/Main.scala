@@ -1,7 +1,5 @@
-import breeze.linalg.{norm, DenseVector}
-import breeze.optimize.{LBFGS, DiffFunction}
 import ru.biocad.game._
-import ru.biocad.server.{Submiter, ServiceHolder}
+import ru.biocad.server.{ServiceHolder, Submiter}
 import ru.biocad.solver.{StringChanger, Weights}
 
 /**
@@ -45,7 +43,7 @@ object Gambler extends App {
     (finalScore, stringOptimizer(solution))
   }
 
-  override def main (args: Array[String]) {
+  override def main(args: Array[String]) {
 
     val problems = Game.loadProblems
 
@@ -77,17 +75,5 @@ object Gambler extends App {
           println(s"Ignored problem #$problem seed: $seed, score: $score")
       }
     }
-  }
-
-  def optmize = {
-
-    val f = new DiffFunction[DenseVector[Double]] {
-      def calculate(x: DenseVector[Double]) = {
-        (norm((x - 3d) :^ 2d, 1d), (x * 2d) - 6d)
-      }
-    }
-
-    val lbfgs = new LBFGS[DenseVector[Double]](maxIter = 100, m = 3)
-    lbfgs.minimize(f, DenseVector(0, 0, 0))
   }
 }
