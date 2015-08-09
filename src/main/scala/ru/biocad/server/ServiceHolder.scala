@@ -4,6 +4,7 @@ import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.util.Timeout
 import ru.biocad.game._
+import ru.biocad.solver.TreeSolver
 import ru.biocad.util.Parser
 import spray.can.Http
 
@@ -22,6 +23,7 @@ class ServiceHolder {
   val problems = loadProblems
 
   var (game, state) = Game.loadGame(currentGame, currentSeed)
+  var solverSolution = new TreeSolver(game).playGame(state, 4, 1)
 
   // System
   implicit val system = ActorSystem("honeycomb")
@@ -43,11 +45,25 @@ class ServiceHolder {
       println("Ы")
       solution = ""
       val (gm, s) = Game.loadGame(currentGame, currentSeed)
+      solverSolution = new TreeSolver(game).playGame(state, 4, 1)
       game = gm
 //      val recommendation = optimizer.startingPowers(solution)
 //      state = s.copy(recommendation = recommendation)
       state = s
       Some(state)
+    }
+    else if (move == 's') {
+      game.movement(state)(Move(solverSolution.head)) match {
+        case Some(gs) =>
+          solution += solverSolution.head
+          solverSolution = solverSolution.tail
+          state = gs
+          println(s"Current: $solution")
+          Some(state)
+        case None =>
+          println(s"End: $solution$move")
+          None
+      }
     }
     else {
       println(s"Update: $move")
