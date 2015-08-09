@@ -11,17 +11,17 @@ class Game(board : Board) {
     val wasLocked = gs.boardState.isLocked(newBee)
     val boardState = if (!wasLocked) gs.boardState else gs.boardState.update(gs.bee)
     val newPrevious = if (wasLocked) {
-      List.empty[Bee]
+      List.empty[Set[Cell]]
     }
     else {
-      newBee :: gs.previous
+      newBee.members.toSet :: gs.previous
     }
     if (wasLocked && gs.currentBee == gs.beez.length - 1) {
       None
     }
     else {
       val (bee, currentBee) = if (!wasLocked) (newBee, gs.currentBee) else (gs.beez(gs.currentBee + 1), gs.currentBee + 1)
-      if (boardState.isLocked(bee) || gs.previous.contains(newBee)) {
+      if (boardState.isLocked(bee) || gs.previous.contains(newBee.members.toSet)) {
         None
       }
       else {
@@ -33,7 +33,7 @@ class Game(board : Board) {
 }
 
 case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],
-                     currentBee : Int, previous : List[Bee], score: Long,
+                     currentBee : Int, previous : List[Set[Cell]], score: Long,
                      clearedLines: Long) {
   def dumpJson : String = {
     val disabled = boardState.filled.map {
