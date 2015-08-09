@@ -2,6 +2,8 @@ package ru.biocad.solver
 
 import ru.biocad.game._
 
+import scala.util.Random
+
 /**
  * User: pavel
  * Date: 09.08.15
@@ -49,7 +51,7 @@ class TreeSolver(game : Game) {
     else {
       tree.variants.map {
         case (move, child) =>
-          (move, child, scoreOfTree(child))
+          (move, child, scoreOfTree(child) + Random.nextDouble())
       }.maxBy(_._3) match {
         case (move, child, _) =>
           Some((move, updateTree(child, depthStep)))
