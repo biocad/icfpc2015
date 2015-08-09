@@ -11,7 +11,7 @@ import scalaj.http.Http
  * Time: 22:51
  */
 class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", command : Int = 24) {
-  private val url = s"https://davar.icfpcontest.org/teams/$command/solutions"
+  private val _url = s"https://davar.icfpcontest.org/teams/$command/solutions"
   private val fileName = "cool_submitions.txt"
 
   case class Problem(task : Int, seed : Int)
@@ -68,13 +68,27 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
     pw.close()
   }
 
+  import dispatch._
   private def submit(task : Int, seed : Int, solution : String, score : Int) : Int = {
-    Http(url)
-      .auth(user = "", password = token)
-      .header("Content-Type", "application/json")
-      .postData(formatPost(task, seed, solution, score))
-      .asString
-      .code
+//    Http(url)
+//      .auth(user = "", password = token)
+//      .header("Content-Type", "application/json")
+//      .postData(formatPost(task, seed, solution, score))
+//      .asString
+//      .code
+
+    val req = url(_url).POST
+      .as(user = "", password = token)
+      .setBody(formatPost(task, seed, solution, score))
+      .addHeader("Content-type", "application/json")
+
+    val result = Http(req OK as.String).either
+
+    result() match {
+      case Right(content)         => println("Content: " + content); 200
+      case Left(StatusCode(404))  => println("Not found"); 404
+      case Left(StatusCode(code)) => println("Some other code: " + code.toString); code
+    }
   }
 
   private def formatPost(task : Int, seed : Int, solution : String, score : Int) : String =
