@@ -10,15 +10,19 @@ import ru.biocad.game.{Move, GameState, Game}
 class TreeSolver(game : Game) {
   def getTree(state : GameState, depth : Int) : DecisionTree = {
     if (depth == 0) {
-      DecisionTree(gameState = state, variants = Map.empty[Move, DecisionTree])
+      DecisionTree(gameState = state, heuScore = 0, variants = Map.empty[Move, DecisionTree])
     }
     else {
-      DecisionTree(gameState = state, variants =
+      DecisionTree(gameState = state, heuScore = 0, variants =
         Move.all.flatMap {
           case move =>
             game.movement(state)(move).map(gs => move -> getTree(gs, depth - 1))
         }.toMap
       )
     }
+  }
+
+  def makeDecision(tree : DecisionTree) : (Move, DecisionTree) = {
+    ???
   }
 }

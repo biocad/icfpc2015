@@ -92,7 +92,7 @@ class ServiceHolder {
     println(s"Game $currentGame ($currentSeed) loaded")
     println(s"# of figures: ${beez.length}")
     (new Game(board), GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez,
-      currentBee = 0, previous = List.empty[Set[Cell]], score = 0, clearedLines = 0))
+      currentBee = 0, previous = List.empty[Set[Cell]], score = 0, lastAction = HZ))
   }
 
   def loadProblems : Map[String, Vector[Int]] = {

@@ -7,6 +7,7 @@ package ru.biocad.game
  */
 class Game(board : Board) {
   def movement(gs : GameState)(direction : Move) : Option[GameState] = {
+    var lastAction : GameAction = SimpleMove
     val newBee = gs.bee.move(direction)
     val wasLocked = gs.boardState.isLocked(newBee)
     val boardState = if (!wasLocked) gs.boardState else gs.boardState.update(gs.bee)
@@ -25,16 +26,18 @@ class Game(board : Board) {
         None
       }
       else {
-        val (points, clearedLines) = Scorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee, newPrevious, 0, 0))
-        Some(GameState(boardState, bee, gs.beez, currentBee, newPrevious, points + gs.score, clearedLines))
+        val (points, clearedLines) = Scorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee, newPrevious, 0, HZ))
+        if (wasLocked) {
+          lastAction = LockedMove(clearedLines)
+        }
+        Some(GameState(boardState, bee, gs.beez, currentBee, newPrevious, points + gs.score, lastAction))
       }
     }
   }
 }
 
 case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],
-                     currentBee : Int, previous : List[Set[Cell]], score: Long,
-                     clearedLines: Long) {
+                     currentBee : Int, previous : List[Set[Cell]], score: Long, lastAction : GameAction) {
   def dumpJson : String = {
     val disabled = boardState.filled.map {
       case cell =>

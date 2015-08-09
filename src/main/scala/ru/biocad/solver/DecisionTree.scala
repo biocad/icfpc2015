@@ -7,4 +7,4 @@ import ru.biocad.game.{Move, GameState}
  * Date: 09.08.15
  * Time: 12:16
  */
-case class DecisionTree(gameState : GameState, variants : Map[Move, DecisionTree])
+case class DecisionTree(gameState : GameState, heuScore : Int, variants : Map[Move, DecisionTree])
