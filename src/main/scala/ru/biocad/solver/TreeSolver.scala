@@ -42,7 +42,7 @@ class TreeSolver(game : Game, scorer : Scorer) {
       case _ : EndState =>
         Some(DecisionTree(state = state, variants = Map.empty[Move, DecisionTree]))
       case gs : GameState if depth == 0 =>
-        if (Random.nextDouble() < 0.1) {
+        if (Random.nextDouble() < 0.01) {
           construct(gs, depth)
         }
         else {
