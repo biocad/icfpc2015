@@ -10,11 +10,14 @@ import ru.biocad.game.{Cell, GameState, EndState}
 
 case class Weights(
                   ca: Double = 1,     // locked cells around bee
-                  cw: Double = -4,     // locked cells around walls
+                  cw: Double = 0,     // locked cells around walls
                   cf: Double = 5,     // locked cells around floor
                   uc: Double = -10,     // unreachable cells
                   bl: Double = 100,     // cleared lines
-                  bh: Double = -1     // current bee top element distance from bottom
+                  bh: Double = -1,     // current bee top element distance from bottom
+
+                  fc: Double = -1,
+                  gs: Double = 2
                     )
 
 class Scorer(weights : Weights) {
@@ -32,14 +35,16 @@ class Scorer(weights : Weights) {
     val bee = gameState.bee
     val lockedCellsNearBee = gameState.boardState.cellsAround(bee)
 
-    val ca = lockedCellsNearBee.size
-    val cw = gameState.boardState.filled.count(cell => cell.r == 0 || cell.r == gameState.boardState.getBoard.width)
-    val cf = gameState.boardState.filled.count(cell => cell.q == gameState.boardState.getBoard.height)
-    val uc = if (gameState.boardState.filled.isEmpty) 0 else gameState.boardState.numberOfUnreachableBelow(Cell(gameState.boardState.getBoard.width / 2, 0), gameState.boardState.filled.minBy(_.r).r)
-    val bl = gameState.lastAction.linesCleared
-    val bh = gameState.boardState.getBoard.height - bee.members.map(m => m.r).min
-
-    ca * w.ca + cw * w.cw + cf * w.cf + uc * w.uc + bl * w.bl + bh * w.bh
+//    val ca = lockedCellsNearBee.size
+//    val cw = gameState.boardState.filled.count(cell => cell.r == 0 || cell.r == gameState.boardState.getBoard.width)
+//    val cf = gameState.boardState.filled.count(cell => cell.q == gameState.boardState.getBoard.height)
+//    val uc = if (gameState.boardState.filled.isEmpty) 0 else gameState.boardState.numberOfUnreachableBelow(Cell(gameState.boardState.getBoard.width / 2, 0), gameState.boardState.filled.minBy(_.r).r)
+//    val bl = gameState.lastAction.linesCleared
+//    val bh = gameState.boardState.getBoard.height - bee.members.map(m => m.r).min
+    val fc = gameState.boardState.filled
+    val gs = gameState.score
+    w.fc * fc.size + w.gs * gs
+    //ca * w.ca + cw * w.cw + cf * w.cf + uc * w.uc + bl * w.bl + bh * w.bh
   }
 
   protected def scoreOfEnd(endState: EndState) : Double = {
