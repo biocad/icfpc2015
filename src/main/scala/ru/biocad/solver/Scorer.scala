@@ -8,10 +8,18 @@ import ru.biocad.game.{GameState, EndState}
  * Time: 22:26
  */
 class Scorer(weights : List[Double]) {
-  def apply(state : Either[GameState, EndState]) : Double = {
+  final def apply(state : Either[GameState, EndState]) : Double = {
     state match {
-      case Left(gs) => gs.score
-      case Right(es) => es.score
+      case Left(gs) => scoreOfGame(gs)
+      case Right(es) => scoreOfEnd(es)
     }
+  }
+
+  protected def scoreOfGame(gameState: GameState) : Double = {
+    gameState.score
+  }
+
+  protected def scoreOfEnd(endState: EndState) : Double = {
+    endState.score
   }
 }
