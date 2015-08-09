@@ -19,5 +19,5 @@ case object SimpleMove extends GameAction {
   override def score : Int = 1
 }
 case class LockedMove(linesCleared : Int) extends GameAction {
-  override def score : Int = 1 + linesCleared
+  override def score : Int = 1 + 10 * linesCleared
 }
