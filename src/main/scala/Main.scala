@@ -55,7 +55,7 @@ object Gambler extends App {
         playGame(0, 0, 6, 6)
       })
       val (score, solution) = games.maxBy(g => g._1)
-      println(s"Problem: $problem, Seed: $seed, Score: ${score} | Solution: ${solution}")
+      println(s"Problem: $problem, Seed: $seed, Score: $score | Solution: $solution")
       (seed, solution, score)
     }
 
@@ -66,8 +66,8 @@ object Gambler extends App {
       val seed = g._1
       val solution = g._2
       val score = g._3
-      submitter.submitIfCool(problem, g._1, g._2, g._3)
-      println(s"Submitted problem #${problem} seed: ${seed}, score: ${score}")
+      submitter.submitIfCool(problem, seed, solution, score)
+      println(s"Submitted problem #$problem seed: $seed, score: $score")
     }
   }
 
