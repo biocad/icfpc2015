@@ -16,20 +16,13 @@ import scala.concurrent.duration._
  * Time: 13:20
  */
 class ServiceHolder {
-  var currentGame = "6"
-  var currentSeed = 0
-
-//  val optimizer = new MoveOptimizer(Source.fromFile("power_phrases.txt").getLines())
   val problems = loadProblems
 
-  var (game, state) = Game.loadGame(currentGame, currentSeed)
-
-  var lastSolver : TreeSolver = null.asInstanceOf[TreeSolver]
-  var lastTree : DecisionTree = null.asInstanceOf[DecisionTree]
+  val gamePlayer = new GamePlayer()
 
   // System
   implicit val system = ActorSystem("honeycomb")
-  val service = system.actorOf(Props(classOf[RESTactor], problems, newGame, update, getSolution), "stateful")
+  val service = system.actorOf(Props(classOf[RESTactor], problems, gameFromString, update, getSolution), "stateful")
   var solution = ""
 
   implicit val timeout = Timeout(5.seconds)
@@ -44,85 +37,24 @@ class ServiceHolder {
 
   def update : Char => Option[GameState] = move => {
     if(move == 'Ы') {
-      println("Ы")
-      startNewGame()
+      gamePlayer.startNewGame()
     }
     else if (move == 's') {
-      moveItPlease()
+      gamePlayer.moveItPlease()
     }
     else {
-      lastSolver = null
-      lastTree = null
-      moveItMoveIt(Move(move))
+      gamePlayer.releaseSolver()
+      gamePlayer.moveItMoveIt(Move(move))
     }
   }
 
-  def startNewGame() : Option[GameState] = {
-    solution = ""
-    lastSolver = null
-    lastTree = null
-    val (gm, s) = Game.loadGame(currentGame, currentSeed)
-    game = gm
-    state = s
-    Some(state)
-  }
-
-  def moveItPlease() : Option[GameState] = {
-    if (lastSolver == null) {
-      lastSolver = new TreeSolver(game)
-    }
-    if (lastTree == null) {
-      lastSolver.getTree(state, 4) match {
-        case Some(tree) =>
-          lastTree = tree
-        case None =>
-          println("Shit happend!")
-          return None
-      }
-    }
-
-    lastSolver.makeDecision(lastTree, 1) match {
-      case Some((move, newTree)) =>
-        lastTree = newTree
-        newTree.state match {
-          case gs : GameState =>
-            updateState(move)(Left(gs))
-          case es : EndState =>
-            updateState(move)(Right(es))
-        }
-      case None =>
-        println("End of game")
-        None
-    }
-  }
-
-  def moveItMoveIt(move : Move) : Option[GameState] = {
-    println(s"Update: ${move.name}")
-    updateState(move)(game.movement(state)(move))
-  }
-
-  def updateState(move : Move) : Either[GameState, EndState] => Option[GameState] = {
-    case Left(gs) =>
-      solution += move.symbols.head
-      state = gs
-      println(s"Current: $solution")
-      Some(state)
-    case Right(ge) =>
-      println(s"End (${ge.name}): $solution${move.symbols.head}")
-      None
-  }
-
-  def newGame : String => Option[GameState] = game_sid => {
-    solution = ""
-    game_sid.split('_') match {
-      case Array(g, sid) =>
-        currentGame = g
-        currentSeed = sid.toInt
-        startNewGame()
+  def gameFromString : String => Option[GameState] = game_seed =>
+    game_seed.split('_') match {
+      case Array(gameId, seed) =>
+        gamePlayer.startNewGame(gameId.toInt, seed.toInt)
       case _ =>
         None
     }
-  }
 
   def loadProblems : Map[String, Vector[Int]] = {
     val res = (0 to 24).map {

@@ -46,7 +46,7 @@ class Game(board : Board) {
 }
 
 object Game {
-  def loadGame(currentGame : String, currentSeed : Int) : (Game, GameState) = {
+  def loadGame(currentGame : Int, currentSeed : Int) : (Game, GameState) = {
     val rawProblem = scala.io.Source.fromFile(s"problems/problem_$currentGame.json").mkString
     val parsedProblem = Parser.parseProblem(rawProblem)
     val seeds = parsedProblem.sourceSeeds
