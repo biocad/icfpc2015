@@ -30,17 +30,26 @@ class TreeSolver(game : Game, scorer : Scorer) {
     }
 
   def getTree(state : Scored, depth : Int) : Option[DecisionTree] = {
+    def construct(gs : GameState, depth : Int) : Option[DecisionTree] = {
+      Some(DecisionTree(state = gs, variants = Move.all.flatMap {
+        case move => getTree(game.movement(gs)(move).merge, depth).map(move -> _)
+      }.toMap))
+    }
+
     state match {
       case InvalidMove =>
         None
       case _ : EndState =>
         Some(DecisionTree(state = state, variants = Map.empty[Move, DecisionTree]))
-      case _ : GameState if depth == 0 =>
-        Some(DecisionTree(state = state, variants = Map.empty[Move, DecisionTree]))
+      case gs : GameState if depth == 0 =>
+        if (Random.nextDouble() < 0.1) {
+          construct(gs, depth)
+        }
+        else {
+          Some(DecisionTree(state = state, variants = Map.empty[Move, DecisionTree]))
+        }
       case gs : GameState =>
-        Some(DecisionTree(state = gs, variants = Move.all.flatMap {
-          case move => getTree(game.movement(gs)(move).merge, depth - 1).map(move -> _)
-        }.toMap))
+        construct(gs, depth - 1)
     }
   }
 
