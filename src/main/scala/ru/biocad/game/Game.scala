@@ -1,5 +1,7 @@
 package ru.biocad.game
 
+import ru.biocad.util.Parser
+
 /**
  * User: pavel
  * Date: 08.08.15
@@ -7,40 +9,59 @@ package ru.biocad.game
  */
 class Game(board : Board) {
   def movement(gs : GameState)(direction : Move) : Option[GameState] = {
-    var lastAction : GameAction = SimpleMove
-    val newBee = gs.bee.move(direction)
-    val wasLocked = gs.boardState.isLocked(newBee)
+    val beeNextMove = gs.bee.move(direction)
+    val wasLocked = gs.boardState.isLocked(beeNextMove)
     val boardState = if (!wasLocked) gs.boardState else gs.boardState.update(gs.bee)
-    val newPrevious = if (wasLocked) {
-      List.empty[Set[Cell]]
+
+    if (!wasLocked && gs.previous.contains(beeNextMove.members.toSet)) {
+      None // We have already been here
+    }
+    else if (wasLocked && gs.currentBee == gs.beez.length - 1) {
+      None // Ok, we won
     }
     else {
-      newBee.members.toSet :: gs.previous
-    }
-    if (wasLocked && gs.currentBee == gs.beez.length - 1) {
-      None
-    }
-    else {
-      val (bee, currentBee) = if (!wasLocked) (newBee, gs.currentBee) else {
-        println("New bee spawned")
-        (gs.beez(gs.currentBee + 1), gs.currentBee + 1)
-      }
-      if (boardState.isLocked(bee) || gs.previous.contains(newBee.members.toSet)) {
+      val (bee, newPrevious, currentBee) =
+        if (!wasLocked) {
+          (beeNextMove, gs.previous + beeNextMove.members.toSet, gs.currentBee)
+        }
+        else {
+          println("New bee spawned")
+          val tmpBee = gs.beez(gs.currentBee + 1)
+          (tmpBee, Set(tmpBee.members.toSet), gs.currentBee + 1)
+        }
+
+      if (boardState.isLocked(bee)) {
         None
       }
       else {
         val (points, clearedLines) = Scorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee, newPrevious, 0, HZ))
-        if (wasLocked) {
-          lastAction = LockedMove(clearedLines)
-        }
+        val lastAction = if (wasLocked) LockedMove(clearedLines) else SimpleMove
         Some(GameState(boardState, bee, gs.beez, currentBee, newPrevious, points + gs.score, lastAction))
       }
     }
   }
 }
 
+object Game {
+  def loadGame(currentGame : String, currentSeed : Int) : (Game, GameState) = {
+    val rawProblem = scala.io.Source.fromFile(s"problems/problem_$currentGame.json").mkString
+    val parsedProblem = Parser.parseProblem(rawProblem)
+    val seeds = parsedProblem.sourceSeeds
+    val (board, filled, beezArray) = parsedProblem.getGameRules
+
+    val beez = (beezArray zip seeds).find(_._2 == currentSeed) match {
+      case Some((bees, _)) => bees
+      case None => throw new RuntimeException("Go to hell!")
+    }
+    println(s"Game $currentGame ($currentSeed) loaded")
+    println(s"# of figures: ${beez.length}")
+    (new Game(board), GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez,
+      currentBee = 0, previous = Set(beez.head.members.toSet), score = 0, lastAction = HZ))
+  }
+}
+
 case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],
-                     currentBee : Int, previous : List[Set[Cell]], score: Long, lastAction : GameAction) {
+                     currentBee : Int, previous : Set[Set[Cell]], score: Long, lastAction : GameAction) {
   def dumpJson : String = {
     val disabled = boardState.filled.map {
       case cell =>
