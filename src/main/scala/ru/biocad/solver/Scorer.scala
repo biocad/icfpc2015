@@ -1,6 +1,6 @@
 package ru.biocad.solver
 
-import ru.biocad.game.{GameState, EndState}
+import ru.biocad.game.{Cell, GameState, EndState}
 
 /**
  * User: pavel
@@ -35,7 +35,7 @@ class Scorer(weights : Weights) {
     val cb = lockedCellsNearBee.size
     val cw = gameState.boardState.filled.count(cell => cell.r == 0 || cell.r == gameState.boardState.getBoard.width)
     val cf = gameState.boardState.filled.count(cell => cell.q == gameState.boardState.getBoard.height)
-    val uc = 0
+    val uc = if (gameState.boardState.filled.isEmpty) 0 else gameState.boardState.numberOfUnreachableBelow(Cell(gameState.boardState.getBoard.width / 2, 0), gameState.boardState.filled.minBy(_.r).r)
     val bc = 0
 
     // Can be board height - rmin

@@ -59,7 +59,7 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
     }.sum
   }
 
-  def isReachable(from : Cell, to : Cell) : Boolean = {
+  def isReachable(from : Cell, to : Cell, was : Set[Cell] = Set.empty[Cell]) : Boolean = {
     if (!board.inBoard(from) || !board.inBoard(to) || filled.contains(from)) {
       false
     }
@@ -67,7 +67,15 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
       true
     }
     else {
-      from.neighbors.find(cell => isReachable(cell, to)) match {
+      from.neighbors.find {
+        case cell =>
+          if (!was.contains(cell)) {
+            isReachable(cell, to, was + cell)
+          }
+          else {
+            false
+          }
+      } match {
         case Some(_) => true
         case None => false
       }
