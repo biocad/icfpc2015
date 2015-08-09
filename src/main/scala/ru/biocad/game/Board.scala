@@ -54,7 +54,7 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
         (row + 1 until board.height).map {
           case r =>
             val cell = Cell(q, r)
-            if (!filled.contains(cell) && isReachable(from, cell)) 1 else 0
+            if (!filled.contains(cell) && !isReachable(cell, from)) 1 else 0
         }.sum
     }.sum
   }
