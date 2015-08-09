@@ -8,16 +8,18 @@ package ru.biocad.game
 trait GameAction {
   def linesCleared : Int
   def score : Int
+  def lockedAround : Int
 }
 
 case object HZ extends GameAction {
   override def linesCleared : Int = 0
   override def score : Int = 0
+  override def lockedAround : Int = 0
 }
-case object SimpleMove extends GameAction {
+case class SimpleMove(lockedAround : Int) extends GameAction {
   override def linesCleared : Int = 0
   override def score : Int = 1
 }
-case class LockedMove(linesCleared : Int) extends GameAction {
-  override def score : Int = 1 + 10 * linesCleared
+case class LockedMove(linesCleared : Int, lockedAround : Int) extends GameAction {
+  override def score : Int = linesCleared
 }

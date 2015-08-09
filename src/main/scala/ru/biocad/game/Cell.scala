@@ -33,6 +33,20 @@ case class Cell(q : Int, r : Int) {
     }
   }
 
+  def isNeighbor(cell : Cell) : Boolean = {
+    val isOddRow = r % 2 ==0
+    val neighbors =
+      if (!isOddRow) {
+        List(Cell(-1, -1), Cell(0, -1), Cell(-1, 0),
+             Cell(+1, 0), Cell(-1, +1), Cell(0, +1))
+      }
+      else {
+        List(Cell(0, -1), Cell(+1, -1), Cell(-1, 0),
+             Cell(+1, 0), Cell(0, +1), Cell(+1, +1))
+      }
+    neighbors.contains(toOffset(cell))
+  }
+
   def toCellCube(isOddRow : Boolean) : CellCube = {
     val x = if (isOddRow) q - (r - (r&1)) / 2 else q - (r + (r&1)) / 2
     val z = r

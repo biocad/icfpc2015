@@ -42,6 +42,12 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
     }
     else true
 
+  def cellsAround(bee : Bee) : Iterable[Cell] =
+    filled.filter {
+      case cell =>
+        bee.members.exists(_.isNeighbor(cell))
+    }
+
   def update(bee: Bee): BoardState =
     BoardState(filled = newField(bee))(board = board)
 

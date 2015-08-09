@@ -35,7 +35,8 @@ class Game(board : Board) {
       }
       else {
         val (points, clearedLines) = Scorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee, newPrevious, 0, HZ))
-        val lastAction = if (wasLocked) LockedMove(clearedLines) else SimpleMove
+        val cellsAround = boardState.cellsAround(bee).size
+        val lastAction = if (wasLocked) LockedMove(linesCleared = clearedLines, cellsAround) else SimpleMove(cellsAround)
         Some(GameState(boardState, bee, gs.beez, currentBee, newPrevious, points + gs.score, lastAction))
       }
     }

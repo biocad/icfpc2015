@@ -1,6 +1,6 @@
 package ru.biocad.solver
 
-import ru.biocad.game.{MoveNothing, Move, GameState, Game}
+import ru.biocad.game.{Game, GameState, Move}
 
 /**
  * User: pavel
@@ -61,6 +61,6 @@ class TreeSolver(game : Game) {
       tree.gameState.lastAction.score
     }
     else {
-      tree.variants.map { case (move, child) => scoreOfMove(child) }.max
+      tree.gameState.lastAction.score + tree.variants.map { case (move, child) => scoreOfMove(child) }.max
     }
 }
