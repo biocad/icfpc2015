@@ -4,7 +4,7 @@ import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.util.Timeout
 import ru.biocad.game._
-import ru.biocad.solver.TreeSolver
+import ru.biocad.solver.{DecisionTree, TreeSolver}
 import ru.biocad.util.Parser
 import spray.can.Http
 
@@ -23,7 +23,9 @@ class ServiceHolder {
   val problems = loadProblems
 
   var (game, state) = Game.loadGame(currentGame, currentSeed)
-  var solverSolution : String = ""
+
+  var lastSolver : TreeSolver = null.asInstanceOf[TreeSolver]
+  var lastTree : DecisionTree = null.asInstanceOf[DecisionTree]
 
   // System
   implicit val system = ActorSystem("honeycomb")
@@ -43,42 +45,63 @@ class ServiceHolder {
   def update : Char => Option[GameState] = move => {
     if(move == 'Ы') {
       println("Ы")
-      solution = ""
-      val (gm, s) = Game.loadGame(currentGame, currentSeed)
-      updateStrategy()
-      game = gm
-//      val recommendation = optimizer.startingPowers(solution)
-//      state = s.copy(recommendation = recommendation)
-      state = s
-      Some(state)
+      startNewGame()
     }
     else if (move == 's') {
-      val direction = solverSolution.head
-      game.movement(state)(Move(direction)) match {
-        case Left(gs) =>
-          solution += direction
-          solverSolution = solverSolution.tail
-          state = gs
-          println(s"Current: $solution")
-          println(s"Strategy next: $solverSolution")
-          Some(state)
-        case Right(ge) =>
-          println(s"End (${ge.name}): $solution$direction")
-          None
-      }
+      moveItPlease()
     }
     else {
-      println(s"Update: $move")
-      game.movement(state)(Move(move)) match {
-        case Left(gs) =>
-          solution += move
-          state = gs
-          println(s"Current: $solution")
-          Some(state)
-        case Right(ge) =>
-          println(s"End (${ge.name}): $solution$move")
-          None
+      lastSolver = null
+      lastTree = null
+      moveItMoveIt(Move(move))
+    }
+  }
+
+  def startNewGame() : Option[GameState] = {
+    solution = ""
+    lastSolver = null
+    lastTree = null
+    val (gm, s) = Game.loadGame(currentGame, currentSeed)
+    game = gm
+    state = s
+    Some(state)
+  }
+
+  def moveItPlease() : Option[GameState] = {
+    if (lastSolver == null) {
+      lastSolver = new TreeSolver(game)
+    }
+    if (lastTree == null) {
+      lastSolver.getTree(state, 4) match {
+        case Some(tree) =>
+          lastTree = tree
+        case None =>
+          println("Shit happend!")
+          return None
       }
+    }
+
+    lastSolver.makeDecision(lastTree, 1) match {
+      case Some((move, newTree)) =>
+        lastTree = newTree
+        moveItMoveIt(move)
+      case None =>
+        println("End of game")
+        None
+    }
+  }
+
+  def moveItMoveIt(move : Move) : Option[GameState] = {
+    println(s"Update: ${move.name}")
+    game.movement(state)(move) match {
+      case Left(gs) =>
+        solution += move.symbols.head
+        state = gs
+        println(s"Current: $solution")
+        Some(state)
+      case Right(ge) =>
+        println(s"End (${ge.name}): $solution${move.symbols.head}")
+        None
     }
   }
 
@@ -88,7 +111,7 @@ class ServiceHolder {
       case Array(g, sid) =>
         currentGame = g
         currentSeed = sid.toInt
-        update('Ы')
+        startNewGame()
       case _ =>
         None
     }
@@ -102,12 +125,5 @@ class ServiceHolder {
         s"$i" -> parsedProblem.sourceSeeds
     }.toMap
     res
-  }
-
-  def updateStrategy() : Unit = {
-    println("Starting calculations")
-    solverSolution = new TreeSolver(game).playGame(state, 6, 1)
-    println(s"My new strategy: $solverSolution")
-    println("Strategy created")
   }
 }
