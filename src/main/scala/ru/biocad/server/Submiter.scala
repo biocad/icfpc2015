@@ -2,7 +2,6 @@ package ru.biocad.server
 
 import java.io.{File, PrintWriter}
 
-import scala.concurrent.Promise
 import scala.io.Source
 import scalaj.http.Http
 
