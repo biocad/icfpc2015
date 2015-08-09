@@ -71,9 +71,10 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
   private def submit(task : Int, seed : Int, solution : String, score : Int) : Int = {
     Http(url)
       .auth(user = "", password = token)
-      .postData(formatPost(task, seed, solution, score))
       .header("Content-Type", "application/json")
-      .asString.code
+      .postData(formatPost(task, seed, solution, score))
+    println("Something happend")
+    201
   }
 
   private def formatPost(task : Int, seed : Int, solution : String, score : Int) : String =
