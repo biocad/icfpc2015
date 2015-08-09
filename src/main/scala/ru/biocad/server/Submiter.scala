@@ -2,8 +2,13 @@ package ru.biocad.server
 
 import java.io.{File, PrintWriter}
 
+import argonaut.CodecJson
+import argonaut._
+import Argonaut._
+
 import scala.io.Source
-import scalaj.http.Http
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * User: pavel
@@ -70,15 +75,8 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
 
   import dispatch._
   private def submit(task : Int, seed : Int, solution : String, score : Int) : Int = {
-//    Http(url)
-//      .auth(user = "", password = token)
-//      .header("Content-Type", "application/json")
-//      .postData(formatPost(task, seed, solution, score))
-//      .asString
-//      .code
-
     val req = url(_url).POST
-      .as(user = "", password = token)
+      .as_!(user = "", password = token)
       .setBody(formatPost(task, seed, solution, score))
       .addHeader("Content-type", "application/json")
 
@@ -88,17 +86,17 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
       case Right(content)         => println("Content: " + content); 200
       case Left(StatusCode(404))  => println("Not found"); 404
       case Left(StatusCode(code)) => println("Some other code: " + code.toString); code
+      case Left(_)                => println("Shit happend"); 777
     }
   }
 
   private def formatPost(task : Int, seed : Int, solution : String, score : Int) : String =
-    s"""
-      |[
-      |  { "problemId": $task
-      |  , "seed":      $seed
-      |  , "tag":       "$task.$seed.${score}_${System.currentTimeMillis()}"
-      |  , "solution":  "$solution"
-      |  }
-      |]
-    """.stripMargin
+    "[" + SubmitionPost(task, seed, solution, s"$task.$seed.$score.${System.currentTimeMillis()}").asJson.pretty(nospace) + "]"
+}
+
+case class SubmitionPost(problemId : Int, seed : Int, solution : String, tag : String)
+
+object SubmitionPost {
+  implicit def SubmitionPostJsonCodec : CodecJson[SubmitionPost] =
+    casecodec4(SubmitionPost.apply, SubmitionPost.unapply)("problemId", "seed", "solution", "tag")
 }

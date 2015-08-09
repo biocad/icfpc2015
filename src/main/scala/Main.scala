@@ -57,6 +57,14 @@ object Gambler extends App {
       (seed, solution, score)
     }
 
+//    val bestOfTheBest = List(
+//      (0, "allaaaallbbbbbbllaaalllaabbbbballallladadlpddpppkkbdbkkaaallllpkkbdbddplpdppakaalllllkkkkblpdppalaaaaapaldpdplallalklpppkpkpddbdlllaalklbkbdbdpakbkpkpddaaaalklkbbdbkbklkkpdpppkbbllklalpaldpdballabbbkbaladapaalpklpkpdplkalakpkbbbblkkppkpdpppkbbkplllaalklbbbllkkbdlalkbbkbddpdpdppkpdpkkkkakallllbkbdbkkpppallllbblkbkkpdppdballbbkbbaalakkblkbkpkkakbkplbkkkkpappdpdlkkbbdbbblkaplbaappaddbbkakbbkkb", 370),
+//      (29060, "lllalllllpppppppllalaaaaaabbbbbbbbbalallaaklbbkappkkbbbdbkbdakalallaakpdppddlbbdpppppklaalllappkbbkklppkbbkaalllaaaadpdblalalalklppppkbbbbbkbkbddplklklllallakappkkkpdpdblkbdakpklalaakbdappkbbkkkbbdbkbddldllaklalpaddbbkpkbbdlbllaaldpabkpppkblplaallkbdbdapppklllkallpkkkakbdbkapkkaallllklbkbbkbkpkpadbdppllkallllkbddbddpkpd", 309),
+//      (6876, "aalalllaabbbbbbbalallaallppppalaalllldlbdapddpppkkbdbklaalkalllbddpdabkbballlklapabkklpkkbbkpkppalaaaalpaldpdaaaaaaaklbbbbbbbkppkppdppppdakbkpaaalalklbbbkbbkpadpkldbkallaakbdbbbkppkklppppkbbbbbbdpdalaakaldbdpdbbkkbakaaaaadbkbdalllbdbdbablladpapapkkbdlllalkbakabklblllkkkkkpdakalllppppakpalabbbbbklpkpdabbappdllklpkkkpapakpkblbkpkpplpaklbkpppkblkbkkadblkbkbdbdbdalklllbkapkbbaladbdb", 356),
+//      (31960, "lalallllapppppllllallaaabbbbblalllaaakapklkkbbbdbdpppkbalkllalaakkklbkplakllllkbbdbadddpkpdpklllllllbadpdlpdbllllllbbdpdblpldpdballllllbdbdddpppdbldakaaaaaaabddpddbkabkbkllaaaappdbdppklkbddppkaaaapdblpdbapllllbdblppdbbakkaaakbdbddadpppkbbapdpldalalklppppkkbbdbbbkbkbddlllakppkpdpkkkbkbbbdppdpllallplbkkbddldpllkapppkpaapadaaklkbdaakpakbddlbdbbdlakabdbapkpalbappplbakbblblabkpap", 353),
+//      (6094, "alaaaalllbbbbbbaallaalaaabbbbbbballlaaldldlpddpppkkbdbkakalllaakaddddplbkbbbbllklaaalddblpdpdalalaalbbbbbdpppdpkppkppdalpddbalalaakabbbbkbdbkkppadpdbdaaallalklbabkpkpkpppldpdbdllalklkldpkkkbkppdpkppdblbbkbdbbkballalakabbaddppkkbdlddlalaapdpkplplaallldpdpklkbdalkallalbkpkklkpdppkkkkbaallllkblpkbkbdbkkalkaallbdbdppppdpakkaballalbdbkakkbkppddppkpkalllldbkakkpddppkbkkalllkplbdpllllkbblppkbkbdabkkplkllbkbdbdppapdlbkkllbbdbdlpdblakpalklllalpppaaakbblppkbkbdblaplbabdbdbdalbbdakbkkddbappakpkkkb", 462)
+//    )
+
     for {
       g <- bestOfTheBest
     } yield {
@@ -64,8 +72,13 @@ object Gambler extends App {
       val seed = g._1
       val solution = g._2
       val score = g._3
-      println(s"Submiter answer: ${submitter.submitIfCool(problem, seed, solution, score)}")
-      println(s"Submitted problem #$problem seed: $seed, score: $score")
+      submitter.submitIfCool(problem, seed, solution, score) match {
+        case Some(response) =>
+          println(s"Submiter answer: $response")
+          println(s"Submitted problem #$problem seed: $seed, score: $score")
+        case None =>
+          println(s"Ignored problem #$problem seed: $seed, score: $score")
+      }
     }
   }
 
