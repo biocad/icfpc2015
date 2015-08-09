@@ -56,8 +56,6 @@ object Game {
       case Some((bees, _)) => bees
       case None => throw new RuntimeException("Go to hell!")
     }
-    // println(s"Game $currentGame ($currentSeed) loaded")
-    // println(s"# of figures: ${beez.length}")
     (new Game(board), GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez,
       currentBee = 0, previous = Set(beez.head.members.toSet), gameScore = 0, lastAction = HZ))
   }

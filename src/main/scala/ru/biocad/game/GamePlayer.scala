@@ -44,7 +44,7 @@ class GamePlayer(scorer : Scorer) {
       lastSolver = new TreeSolver(game, scorer)
     }
     if (lastTree == null) {
-      lastSolver.getTree(state, 4) match {
+      lastSolver.getTree(state, 5) match {
         case Some(tree) =>
           lastTree = tree
         case None =>

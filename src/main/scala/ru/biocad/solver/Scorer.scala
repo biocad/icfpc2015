@@ -9,8 +9,8 @@ import ru.biocad.game.{GameState, EndState}
  */
 
 case class Weights(
-                  a: Double = 3,
-                  b: Double = 2.5,
+                  a: Double = 4,
+                  b: Double = -6,
                   c: Double = 5,
                   d: Double = -8,
                   e: Double = -4,
