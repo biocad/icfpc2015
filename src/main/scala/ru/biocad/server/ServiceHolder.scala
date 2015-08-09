@@ -53,16 +53,17 @@ class ServiceHolder {
       Some(state)
     }
     else if (move == 's') {
-      game.movement(state)(Move(solverSolution.head)) match {
+      val direction = solverSolution.head
+      game.movement(state)(Move(direction)) match {
         case Left(gs) =>
-          solution += solverSolution.head
+          solution += direction
           solverSolution = solverSolution.tail
           state = gs
           println(s"Current: $solution")
           println(s"Strategy next: $solverSolution")
           Some(state)
         case Right(ge) =>
-          println(s"End (${ge.name}): $solution$move")
+          println(s"End (${ge.name}): $solution$direction")
           None
       }
     }
