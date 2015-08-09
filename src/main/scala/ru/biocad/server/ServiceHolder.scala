@@ -84,7 +84,12 @@ class ServiceHolder {
     lastSolver.makeDecision(lastTree, 1) match {
       case Some((move, newTree)) =>
         lastTree = newTree
-        moveItMoveIt(move)
+        newTree.state match {
+          case gs : GameState =>
+            updateState(move)(Left(gs))
+          case es : EndState =>
+            updateState(move)(Right(es))
+        }
       case None =>
         println("End of game")
         None
@@ -93,16 +98,18 @@ class ServiceHolder {
 
   def moveItMoveIt(move : Move) : Option[GameState] = {
     println(s"Update: ${move.name}")
-    game.movement(state)(move) match {
-      case Left(gs) =>
-        solution += move.symbols.head
-        state = gs
-        println(s"Current: $solution")
-        Some(state)
-      case Right(ge) =>
-        println(s"End (${ge.name}): $solution${move.symbols.head}")
-        None
-    }
+    updateState(move)(game.movement(state)(move))
+  }
+
+  def updateState(move : Move) : Either[GameState, EndState] => Option[GameState] = {
+    case Left(gs) =>
+      solution += move.symbols.head
+      state = gs
+      println(s"Current: $solution")
+      Some(state)
+    case Right(ge) =>
+      println(s"End (${ge.name}): $solution${move.symbols.head}")
+      None
   }
 
   def newGame : String => Option[GameState] = game_sid => {
