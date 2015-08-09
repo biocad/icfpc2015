@@ -7,7 +7,7 @@ import ru.biocad.solver.{Scorer, DecisionTree, TreeSolver}
  * Date: 09.08.15
  * Time: 21:26
  */
-class GamePlayer(scorer : Scorer) {
+class GamePlayer(scorer : Scorer, depth: Int) {
   var game : Game = null.asInstanceOf[Game]
   var state : GameState = null.asInstanceOf[GameState]
 
@@ -44,7 +44,7 @@ class GamePlayer(scorer : Scorer) {
       lastSolver = new TreeSolver(game, scorer)
     }
     if (lastTree == null) {
-      lastSolver.getTree(state, 4) match {
+      lastSolver.getTree(state, depth) match {
         case Some(tree) =>
           lastTree = tree
         case None =>

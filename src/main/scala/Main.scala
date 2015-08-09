@@ -25,11 +25,11 @@ object Main extends App {
 object Gambler extends App {
 
   def playGame(problem: Int, seed: Int, depth: Int, depthStep: Int): (Int, String) = {
-    val weights = new Weights(-1, 2) // new Weights(-1, 2)
+    val weights = Weights()
     val scorer = new ru.biocad.solver.Scorer(weights)
-    val gp = new GamePlayer(scorer)
-    val gameState = gp.startNewGame(problem, seed)
+    val gp = new GamePlayer(scorer, depth)
 
+    val gameState = gp.startNewGame(problem, seed)
 
     @annotation.tailrec
     def playState(prev: GameState, next: Option[GameState], scoreAcc: Int): (Int, String) =
@@ -45,12 +45,15 @@ object Gambler extends App {
 
   override def main (args: Array[String]) {
 
-    val problem = 3
-    val seeds = List(0, 29060, 6876, 31960, 6094)
+    val problems = Game.loadProblems
+
+    val problem = 0
+    val attempt = 1
+    val seeds = problems(problem)
 
     val bestOfTheBest = seeds.map { case seed =>
-      val games = (0 to 0).par.map(i => {
-        playGame(0, 0, 6, 6)
+      val games = (0 until attempt).par.map(i => {
+        playGame(problem, seed, 4, 1)
       })
       val (score, solution) = games.maxBy(g => g._1)
       println(s"Problem: $problem, Seed: $seed, Score: $score | Solution: $solution")

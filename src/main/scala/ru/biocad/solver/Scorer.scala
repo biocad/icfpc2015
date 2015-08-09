@@ -9,13 +9,13 @@ import ru.biocad.game.{Cell, GameState, EndState}
  */
 
 case class Weights(
-                  a: Double = -100,     // locked cells
-                  b: Double = -100,     // locked near walls
-                  c: Double = 1000,     // locked near floor
-                  d: Double = -100,     // blocked cells
-                  e: Double = -4,       // blockING cells
-                  f: Double = 3,        // distance from bottom
-                  g: Double = 100       // cleared lines
+                  a: Double = 10,     // locked cells around bee
+                  b: Double = -5,     // locked cells around walls
+                  c: Double = 10,     // locked cells around floor
+                  d: Double = -8,     // unreachable cells
+                  e: Double = -4,     // blockING (making other unreachable) cells
+                  f: Double = -1,     // current bee top element distance from bottom
+                  g: Double = 100     // cleared lines
                     )
 
 class Scorer(weights : Weights) {
@@ -36,15 +36,13 @@ class Scorer(weights : Weights) {
     val cb = lockedCellsNearBee.size
     val cw = gameState.boardState.filled.count(cell => cell.r == 0 || cell.r == gameState.boardState.getBoard.width)
     val cf = gameState.boardState.filled.count(cell => cell.q == gameState.boardState.getBoard.height)
-    val uc = 0 //if (gameState.boardState.filled.isEmpty) 0 else gameState.boardState.numberOfUnreachableBelow(Cell(gameState.boardState.getBoard.width / 2, 0), gameState.boardState.filled.minBy(_.r).r)
+    val uc = if (gameState.boardState.filled.isEmpty) 0 else gameState.boardState.numberOfUnreachableBelow(Cell(gameState.boardState.getBoard.width / 2, 0), gameState.boardState.filled.minBy(_.r).r)
     val bc = 0
     val bl = gameState.lastAction.linesCleared
-    // Can be board height - rmin
     val bh = {
-      // val rmax = bee.members.map(m => m.r).max
       val rmax = gameState.boardState.getBoard.height
       val rmin = bee.members.map(m => m.r).min
-        gameState.boardState.getBoard.height - (rmax - rmin)
+      rmax - rmin
     }
 
     w.a * cb + w.b * cw + w.c * cf + w.d * uc + w.e * bc + w.f * bh + w.g * bl

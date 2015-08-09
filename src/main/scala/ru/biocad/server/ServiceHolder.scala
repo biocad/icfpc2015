@@ -18,9 +18,9 @@ import scala.concurrent.duration._
  */
 class ServiceHolder {
   val problems = Game.loadProblems
-
+  val solDepth = 4
   val weights = new Weights
-  val gamePlayer = new GamePlayer(new Scorer(weights))
+  val gamePlayer = new GamePlayer(new Scorer(weights), solDepth)
   // make a Config with just your special setting
   val confStr = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"application.conf")).mkString
   val myConfig = ConfigFactory.parseString(confStr)
