@@ -21,7 +21,10 @@ class Game(board : Board) {
       None
     }
     else {
-      val (bee, currentBee) = if (!wasLocked) (newBee, gs.currentBee) else (gs.beez(gs.currentBee + 1), gs.currentBee + 1)
+      val (bee, currentBee) = if (!wasLocked) (newBee, gs.currentBee) else {
+        println("New bee spawned")
+        (gs.beez(gs.currentBee + 1), gs.currentBee + 1)
+      }
       if (boardState.isLocked(bee) || gs.previous.contains(newBee.members.toSet)) {
         None
       }
