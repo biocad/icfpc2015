@@ -1,13 +1,13 @@
 package ru.biocad.game
 
-import ru.biocad.solver.{DecisionTree, TreeSolver}
+import ru.biocad.solver.{Scorer, DecisionTree, TreeSolver}
 
 /**
  * User: pavel
  * Date: 09.08.15
  * Time: 21:26
  */
-class GamePlayer {
+class GamePlayer(scorer : Scorer) {
   var game : Game = null.asInstanceOf[Game]
   var state : GameState = null.asInstanceOf[GameState]
 
@@ -41,7 +41,7 @@ class GamePlayer {
 
   def moveItPlease() : Option[GameState] = {
     if (lastSolver == null) {
-      lastSolver = new TreeSolver(game)
+      lastSolver = new TreeSolver(game, scorer)
     }
     if (lastTree == null) {
       lastSolver.getTree(state, 4) match {

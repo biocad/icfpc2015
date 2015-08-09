@@ -9,7 +9,7 @@ import scala.util.Random
  * Date: 09.08.15
  * Time: 12:14
  */
-class TreeSolver(game : Game) {
+class TreeSolver(game : Game, scorer : Scorer) {
   def playGame(initial : GameState, depth : Int, depthStep : Int) : String = {
     getTree(initial, depth) match {
       case Some(tree) =>
@@ -74,11 +74,18 @@ class TreeSolver(game : Game) {
     }
   }
 
-  def scoreOfTree(tree : DecisionTree) : Int =
+  def scoreOfTree(tree : DecisionTree) : Double =
     if (tree.variants.isEmpty) {
-      tree.state.score
+      scorer(scored2either(tree.state))
     }
     else {
-      tree.state.score + tree.variants.par.map { case (_, child) => scoreOfTree(child) }.max
+      scorer(scored2either(tree.state)) + tree.variants.par.map { case (_, child) => scoreOfTree(child) }.max
     }
+
+  def scored2either : Scored => Either[GameState, EndState] = {
+    case gs : GameState =>
+      Left(gs)
+    case es : EndState =>
+      Right(es)
+  }
 }
