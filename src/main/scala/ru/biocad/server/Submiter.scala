@@ -28,7 +28,7 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
   }
 
   private def taskCool(task : Int, seed : Int) : Int = {
-    readFile.find(_ == Problem(task, seed)) match {
+    readFile.find(_._1 == Problem(task, seed)) match {
       case Some((_, solution)) =>
         solution.score
       case None =>
