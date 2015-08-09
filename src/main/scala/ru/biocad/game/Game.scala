@@ -33,7 +33,7 @@ class Game(board : Board) {
         Right(CannotCreateBee)
       }
       else {
-        val (points, clearedLines) = Scorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee, newPrevious, 0, HZ))
+        val (points, clearedLines) = GameScorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee, newPrevious, 0, HZ))
         val lockedAround = boardState.cellsAround(bee).size
         val lastAction =
           if (wasLocked)

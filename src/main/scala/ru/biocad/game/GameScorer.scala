@@ -1,6 +1,6 @@
 package ru.biocad.game
 
-object Scorer {
+object GameScorer {
 
   def getScore(previousGameState: GameState, nextGameState: GameState): (Long, Int) = {
 

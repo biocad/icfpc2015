@@ -80,7 +80,7 @@ class GamePlayer(scorer : Scorer, depth: Int) {
       // println(s"Current: $solution")
       Some(state)
     case Right(ge) =>
-      // println(s"End (${ge.name}): $solution${move.symbols.head}")
+      println(s"Game ended with stated '${ge.name}'")
       None
   }
 }

@@ -9,7 +9,7 @@ import scala.util.Random
  * Date: 09.08.15
  * Time: 12:14
  */
-class TreeSolver(game : Game, scorer : Scorer, cutScore : Double = -100500) {
+class TreeSolver(game : Game, scorer : Scorer) {
   def playGame(initial : GameState, depth : Int, depthStep : Int) : String = {
     getTree(initial, depth) match {
       case Some(tree) =>
@@ -33,9 +33,7 @@ class TreeSolver(game : Game, scorer : Scorer, cutScore : Double = -100500) {
     def construct(gs : GameState, depth : Int) : Option[DecisionTree] = {
       Some(DecisionTree(state = gs, variants = Move.all.flatMap {
         case move =>
-          getTree(game.movement(gs)(move).merge, depth).map(move -> _).filter {
-            case (_, dt) => scoreOfTree(dt) < cutScore
-          }
+          getTree(game.movement(gs)(move).merge, depth).map(move -> _)
       }.toMap))
     }
 
