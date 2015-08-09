@@ -23,7 +23,7 @@ class ServiceHolder {
   val problems = loadProblems
 
   var (game, state) = Game.loadGame(currentGame, currentSeed)
-  var solverSolution = new TreeSolver(game).playGame(state, 4, 1)
+  var solverSolution : String = ""
 
   // System
   implicit val system = ActorSystem("honeycomb")
@@ -45,7 +45,7 @@ class ServiceHolder {
       println("Ы")
       solution = ""
       val (gm, s) = Game.loadGame(currentGame, currentSeed)
-      solverSolution = new TreeSolver(game).playGame(state, 4, 1)
+      updateStrategy()
       game = gm
 //      val recommendation = optimizer.startingPowers(solution)
 //      state = s.copy(recommendation = recommendation)
@@ -54,30 +54,28 @@ class ServiceHolder {
     }
     else if (move == 's') {
       game.movement(state)(Move(solverSolution.head)) match {
-        case Some(gs) =>
+        case Left(gs) =>
           solution += solverSolution.head
           solverSolution = solverSolution.tail
           state = gs
           println(s"Current: $solution")
+          println(s"Strategy next: $solverSolution")
           Some(state)
-        case None =>
-          println(s"End: $solution$move")
+        case Right(ge) =>
+          println(s"End (${ge.name}): $solution$move")
           None
       }
     }
     else {
       println(s"Update: $move")
       game.movement(state)(Move(move)) match {
-        case Some(gs) =>
+        case Left(gs) =>
           solution += move
-//          val recommendation = optimizer.startingPowers(solution)
-//          state = gs.copy(recommendation = recommendation)
           state = gs
           println(s"Current: $solution")
           Some(state)
-        case None =>
-          println(s"End: $solution$move")
-//          optimizer.optimize(solution + move)
+        case Right(ge) =>
+          println(s"End (${ge.name}): $solution$move")
           None
       }
     }
@@ -103,5 +101,12 @@ class ServiceHolder {
         s"$i" -> parsedProblem.sourceSeeds
     }.toMap
     res
+  }
+
+  def updateStrategy() : Unit = {
+    println("Starting calculations")
+    solverSolution = new TreeSolver(game).playGame(state, 6, 1)
+    println(s"My new strategy: $solverSolution")
+    println("Strategy created")
   }
 }

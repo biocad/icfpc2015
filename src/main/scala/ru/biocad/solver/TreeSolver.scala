@@ -1,6 +1,6 @@
 package ru.biocad.solver
 
-import ru.biocad.game.{Game, GameState, Move}
+import ru.biocad.game._
 
 /**
  * User: pavel
@@ -8,8 +8,16 @@ import ru.biocad.game.{Game, GameState, Move}
  * Time: 12:14
  */
 class TreeSolver(game : Game) {
-  def playGame(initial : GameState, depth : Int, depthStep : Int) : String =
-    playTree(getTree(initial, depth), depthStep)
+  def playGame(initial : GameState, depth : Int, depthStep : Int) : String = {
+    getTree(initial, depth) match {
+      case Some(tree) =>
+        println("Initial tree created")
+        playTree(tree, depthStep)
+      case None =>
+        println("Cannot create tree")
+        ""
+    }
+  }
 
   def playTree(initial : DecisionTree, depthStep : Int) : String =
     makeDecision(initial, depthStep) match {
@@ -19,17 +27,18 @@ class TreeSolver(game : Game) {
         ""
     }
 
-  def getTree(state : GameState, depth : Int) : DecisionTree = {
-    if (depth == 0) {
-      DecisionTree(gameState = state, variants = Map.empty[Move, DecisionTree])
-    }
-    else {
-      DecisionTree(gameState = state, variants =
-        Move.all.flatMap {
-          case move =>
-            game.movement(state)(move).map(gs => move -> getTree(gs, depth - 1))
-        }.toMap
-      )
+  def getTree(state : Scored, depth : Int) : Option[DecisionTree] = {
+    state match {
+      case InvalidMove =>
+        None
+      case _ : EndState =>
+        Some(DecisionTree(state = state, variants = Map.empty[Move, DecisionTree]))
+      case _ : GameState if depth == 0 =>
+        Some(DecisionTree(state = state, variants = Map.empty[Move, DecisionTree]))
+      case gs : GameState =>
+        Some(DecisionTree(state = gs, variants = Move.all.flatMap {
+          case move => getTree(game.movement(gs)(move).merge, depth - 1).map(move -> _)
+        }.toMap))
     }
   }
 
@@ -38,29 +47,36 @@ class TreeSolver(game : Game) {
       None
     }
     else {
-      Some(tree.variants.map { case (move, child) => (move, scoreOfMove(child)) }.maxBy(_._2) match {
-        case (move, _) => (move, updateTree(tree.variants(move), depthStep))
-      })
+      tree.variants.map {
+        case (move, child) =>
+          (move, child, scoreOfTree(child))
+      }.maxBy(_._3) match {
+        case (move, child, _) =>
+          Some((move, updateTree(child, depthStep)))
+      }
     }
   }
 
   def updateTree(tree : DecisionTree, depthStep : Int) : DecisionTree = {
     if (tree.variants.isEmpty) {
-      getTree(tree.gameState, depthStep)
+      getTree(tree.state, depthStep) match {
+        case Some(newtree) => newtree
+        case None => tree
+      }
     }
     else {
-      DecisionTree(tree.gameState, variants = tree.variants.map {
+      DecisionTree(tree.state, variants = tree.variants.map {
         case (move, child) =>
           move -> updateTree(child, depthStep)
       })
     }
   }
 
-  def scoreOfMove(tree : DecisionTree) : Int =
+  def scoreOfTree(tree : DecisionTree) : Int =
     if (tree.variants.isEmpty) {
-      tree.gameState.lastAction.score
+      tree.state.score
     }
     else {
-      tree.gameState.lastAction.score + tree.variants.map { case (move, child) => scoreOfMove(child) }.max
+      tree.state.score + tree.variants.par.map { case (_, child) => scoreOfTree(child) }.max
     }
 }

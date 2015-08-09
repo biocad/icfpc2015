@@ -13,6 +13,12 @@ case class Bee(members: Vector[Cell], pivot: Cell) {
       Bee(members = members.map(_.move(mv)), pivot.move(mv))
   }
 
+  def beeLockScore : Int =
+    members.map {
+      case cell =>
+        cell.r + 1
+    }.sum
+
   def width : Int =
     (members.map(_.q).max - members.map(_.q).min) + 1
 

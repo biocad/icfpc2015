@@ -8,16 +8,16 @@ import ru.biocad.util.Parser
  * Time: 1:31
  */
 class Game(board : Board) {
-  def movement(gs : GameState)(direction : Move) : Option[GameState] = {
+  def movement(gs : GameState)(direction : Move) : Either[GameState, EndState] = {
     val beeNextMove = gs.bee.move(direction)
     val wasLocked = gs.boardState.isLocked(beeNextMove)
     val boardState = if (!wasLocked) gs.boardState else gs.boardState.update(gs.bee)
 
     if (!wasLocked && gs.previous.contains(beeNextMove.members.toSet)) {
-      None // We have already been here
+      Right(InvalidMove)// We have already been here
     }
     else if (wasLocked && gs.currentBee == gs.beez.length - 1) {
-      None // Ok, we won
+      Right(GameEnd)  // Ok, we won
     }
     else {
       val (bee, newPrevious, currentBee) =
@@ -25,19 +25,21 @@ class Game(board : Board) {
           (beeNextMove, gs.previous + beeNextMove.members.toSet, gs.currentBee)
         }
         else {
-          println("New bee spawned")
           val tmpBee = gs.beez(gs.currentBee + 1)
           (tmpBee, Set(tmpBee.members.toSet), gs.currentBee + 1)
         }
 
       if (boardState.isLocked(bee)) {
-        None
+        Right(CannotCreateBee)
       }
       else {
         val (points, clearedLines) = Scorer.getScore(gs, GameState(boardState, bee, gs.beez, currentBee, newPrevious, 0, HZ))
-        val cellsAround = boardState.cellsAround(bee).size
-        val lastAction = if (wasLocked) LockedMove(linesCleared = clearedLines, cellsAround) else SimpleMove(cellsAround)
-        Some(GameState(boardState, bee, gs.beez, currentBee, newPrevious, points + gs.score, lastAction))
+        val lockedAround = boardState.cellsAround(bee).size
+        val lastAction =
+          if (wasLocked)
+            LockedMove(linesCleared = clearedLines, lockedAround = lockedAround, beeLockScore = bee.beeLockScore, penalty = 5)
+          else SimpleMove(lockedAround)
+        Left(GameState(boardState, bee, gs.beez, currentBee, newPrevious, points + gs.gameScore, lastAction))
       }
     }
   }
@@ -57,12 +59,12 @@ object Game {
     println(s"Game $currentGame ($currentSeed) loaded")
     println(s"# of figures: ${beez.length}")
     (new Game(board), GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez,
-      currentBee = 0, previous = Set(beez.head.members.toSet), score = 0, lastAction = HZ))
+      currentBee = 0, previous = Set(beez.head.members.toSet), gameScore = 0, lastAction = HZ))
   }
 }
 
 case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],
-                     currentBee : Int, previous : Set[Set[Cell]], score: Long, lastAction : GameAction) {
+                     currentBee : Int, previous : Set[Set[Cell]], gameScore: Long, lastAction : GameAction) extends Scored {
   def dumpJson : String = {
     val disabled = boardState.filled.map {
       case cell =>
@@ -111,9 +113,11 @@ case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],
       |  "colored": [
       |    ${List(disabled, active, pivot).filter(_.nonEmpty).mkString(",\n")}
       |  ],
-      |  "score": $score,
+      |  "score": $gameScore,
       |  "figures": ${beez.length - currentBee}
       |}
     """.stripMargin
   }
+
+  override def score : Int = lastAction.score
 }
