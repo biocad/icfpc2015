@@ -59,6 +59,16 @@ object Game {
     (new Game(board), GameState(boardState = BoardState(filled)(board), bee = beez.head, beez = beez,
       currentBee = 0, previous = Set(beez.head.members.toSet), gameScore = 0, lastAction = HZ))
   }
+
+  def loadProblems : Map[String, Vector[Int]] = {
+    val res = (0 to 24).map {
+      case i =>
+        val rawProblem = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"problems/problem_$i.json")).mkString
+        val parsedProblem = Parser.parseProblem(rawProblem)
+        s"$i" -> parsedProblem.sourceSeeds
+    }.toMap
+    res
+  }
 }
 
 case class GameState(boardState : BoardState, bee : Bee, beez : Array[Bee],

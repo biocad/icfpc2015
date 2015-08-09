@@ -17,7 +17,7 @@ import scala.concurrent.duration._
  * Time: 13:20
  */
 class ServiceHolder {
-  val problems = loadProblems
+  val problems = Game.loadProblems
 
   val weights = new Weights
   val gamePlayer = new GamePlayer(new Scorer(weights))
@@ -69,14 +69,4 @@ class ServiceHolder {
       case _ =>
         None
     }
-
-  def loadProblems : Map[String, Vector[Int]] = {
-    val res = (0 to 24).map {
-      case i =>
-        val rawProblem = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"problems/problem_$i.json")).mkString
-        val parsedProblem = Parser.parseProblem(rawProblem)
-        s"$i" -> parsedProblem.sourceSeeds
-    }.toMap
-    res
-  }
 }
