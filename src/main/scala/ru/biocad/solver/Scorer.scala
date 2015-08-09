@@ -9,10 +9,12 @@ import ru.biocad.game.{GameState, EndState}
  */
 
 case class Weights(
-                  a: Double = 1,
-                  b: Double = 1,
-                  c: Double = 1,
-                  d: Double = 1
+                  a: Double = 3,
+                  b: Double = 2.5,
+                  c: Double = 5,
+                  d: Double = -8,
+                  e: Double = -4,
+                  f: Double = -1
                     )
 
 class Scorer(weights : Weights) {
@@ -27,24 +29,28 @@ class Scorer(weights : Weights) {
 
   protected def scoreOfGame(gameState: GameState) : Double = {
 
-    val cb = 0
-    val cw = 0
-    val cf = 0
+    val bee = gameState.bee
+    val lockedCellsNearBee = gameState.boardState.cellsAround(bee)
+
+    val cb = lockedCellsNearBee.size
+    val cw = gameState.boardState.filled.count(cell => cell.r == 0 || cell.r == gameState.boardState.getBoard.width)
+    val cf = gameState.boardState.filled.count(cell => cell.q == gameState.boardState.getBoard.height)
     val uc = 0
     val bc = 0
-    val bh = 0
+
+    // Can be board height - rmin
+    val bh = {
+      // val rmax = bee.members.map(m => m.r).max
+      val rmax = gameState.boardState.getBoard.height
+      val rmin = bee.members.map(m => m.r).min
+      rmax - rmin
+    }
 
     val filledFields = gameState.boardState.filled
 
-    val bee = gameState.bee
-
-    val beeX = bee.pivot.q
-    val beeY = bee.pivot.r
-
-    val beez = gameState.beez.length
-
     //gameState.score
-    w.a * filledFields.size + w.b * beez + gameState.score
+    // w.a * filledFields.size + w.b * gameState.score
+     w.a * cb + w.b * cw + w.c * cf + w.d * uc + w.e * bc + w.f * bh
   }
 
   protected def scoreOfEnd(endState: EndState) : Double = {

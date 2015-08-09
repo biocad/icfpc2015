@@ -25,7 +25,7 @@ object Main extends App {
 object Gambler extends App {
 
   def playGame(problem: Int, seed: Int, depth: Int, depthStep: Int): (Int, String) = {
-    val weights = Weights(-1, 0, 0, 0)
+    val weights = new Weights // new Weights(-1, 2)
     val scorer = new ru.biocad.solver.Scorer(weights)
     val gp = new GamePlayer(scorer)
     val gameState = gp.startNewGame(problem, seed)
