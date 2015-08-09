@@ -10,7 +10,7 @@ import ru.biocad.game.{Cell, GameState, EndState}
 
 case class Weights(
                   a: Double = 4,
-                  b: Double = -6,
+                  b: Double = -5,
                   c: Double = 5,
                   d: Double = -8,
                   e: Double = -4,
@@ -48,9 +48,7 @@ class Scorer(weights : Weights) {
 
     val filledFields = gameState.boardState.filled
 
-    //gameState.score
-     w.a * filledFields.size + w.b * gameState.score
-//     w.a * cb + w.b * cw + w.c * cf + w.d * uc + w.e * bc + w.f * bh
+    w.a * cb + w.b * cw + w.c * cf + w.d * uc + w.e * bc + w.f * bh
   }
 
   protected def scoreOfEnd(endState: EndState) : Double = {
