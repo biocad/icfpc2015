@@ -60,12 +60,12 @@ object Game {
       currentBee = 0, previous = Set(beez.head.members.toSet), gameScore = 0, lastAction = HZ))
   }
 
-  def loadProblems : Map[String, Vector[Int]] = {
+  def loadProblems : Map[Int, Vector[Int]] = {
     val res = (0 to 24).map {
       case i =>
         val rawProblem = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"problems/problem_$i.json")).mkString
         val parsedProblem = Parser.parseProblem(rawProblem)
-        s"$i" -> parsedProblem.sourceSeeds
+        i -> parsedProblem.sourceSeeds
     }.toMap
     res
   }
