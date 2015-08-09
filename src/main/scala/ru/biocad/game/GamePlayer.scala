@@ -69,7 +69,7 @@ class GamePlayer(scorer : Scorer) {
   }
 
   def moveItMoveIt(move : Move) : Option[GameState] = {
-    println(s"Update: ${move.name}")
+    // println(s"Update: ${move.name}")
     updateState(move)(game.movement(state)(move))
   }
 
@@ -77,7 +77,7 @@ class GamePlayer(scorer : Scorer) {
     case Left(gs) =>
       solution += move.symbols.head
       state = gs
-      println(s"Current: $solution")
+      // println(s"Current: $solution")
       Some(state)
     case Right(ge) =>
       println(s"End (${ge.name}): $solution${move.symbols.head}")

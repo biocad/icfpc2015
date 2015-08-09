@@ -4,7 +4,7 @@ import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import akka.util.Timeout
 import ru.biocad.game._
-import ru.biocad.solver.{Scorer, DecisionTree, TreeSolver}
+import ru.biocad.solver.{Weights, Scorer, DecisionTree, TreeSolver}
 import ru.biocad.util.Parser
 import spray.can.Http
 
@@ -18,7 +18,8 @@ import scala.concurrent.duration._
 class ServiceHolder {
   val problems = loadProblems
 
-  val gamePlayer = new GamePlayer(new Scorer(List.empty[Double]))
+  val weights = new Weights
+  val gamePlayer = new GamePlayer(new Scorer(weights))
 
   // System
   implicit val system = ActorSystem("honeycomb")
