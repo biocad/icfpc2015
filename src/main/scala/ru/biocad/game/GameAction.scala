@@ -21,5 +21,5 @@ case class SimpleMove(lockedAround : Int) extends GameAction {
   override def score : Int = 1
 }
 case class LockedMove(linesCleared : Int, beeLockScore : Int, lockedAround : Int, penalty : Int) extends GameAction {
-  override def score : Int = beeLockScore//linesCleared + beeLockScore + lockedAround - penalty
+  override def score : Int = linesCleared //+ beeLockScore + lockedAround - penalty
 }
