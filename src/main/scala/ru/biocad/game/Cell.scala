@@ -33,18 +33,23 @@ case class Cell(q : Int, r : Int) {
     }
   }
 
+  def neighbors : List[Cell] = {
+    val isOddRow = r % 2 == 0
+    if (!isOddRow) {
+      List(Cell(-1, -1), Cell(0, -1), Cell(-1, 0),
+        Cell(+1, 0), Cell(-1, +1), Cell(0, +1))
+    }
+    else {
+      List(Cell(0, -1), Cell(+1, -1), Cell(-1, 0),
+        Cell(+1, 0), Cell(0, +1), Cell(+1, +1))
+    }.map {
+      case c =>
+        Cell(c.q + q, c.r + r)
+    }
+  }
+
   def isNeighbor(cell : Cell) : Boolean = {
-    val isOddRow = r % 2 ==0
-    val neighbors =
-      if (!isOddRow) {
-        List(Cell(-1, -1), Cell(0, -1), Cell(-1, 0),
-             Cell(+1, 0), Cell(-1, +1), Cell(0, +1))
-      }
-      else {
-        List(Cell(0, -1), Cell(+1, -1), Cell(-1, 0),
-             Cell(+1, 0), Cell(0, +1), Cell(+1, +1))
-      }
-    neighbors.contains(toOffset(cell))
+    neighbors.contains(cell)
   }
 
   def toCellCube(isOddRow : Boolean) : CellCube = {

@@ -48,6 +48,32 @@ case class BoardState(filled: Vector[Cell])(board: Board) {
         bee.members.exists(_.isNeighbor(cell))
     }
 
+  def numberOfUnreachableBelow(from : Cell, row : Int) : Int = {
+    (0 until board.width).map {
+      case q =>
+        (row + 1 until board.height).map {
+          case r =>
+            val cell = Cell(q, r)
+            if (!filled.contains(cell) && isReachable(from, cell)) 1 else 0
+        }.sum
+    }.sum
+  }
+
+  def isReachable(from : Cell, to : Cell) : Boolean = {
+    if (!board.inBoard(from) || !board.inBoard(to) || filled.contains(from)) {
+      false
+    }
+    else if (from == to) {
+      true
+    }
+    else {
+      from.neighbors.find(cell => isReachable(cell, to)) match {
+        case Some(_) => true
+        case None => false
+      }
+    }
+  }
+
   def update(bee: Bee): BoardState =
     BoardState(filled = newField(bee))(board = board)
 
