@@ -20,7 +20,7 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
   def submitIfCool(task : Int, seed : Int, solution : String, score : Int) : Option[Int] = {
     if (score > taskCool(task, seed)) {
       updateCool(task, seed, solution, score)
-      Some(submit(task, seed, solution))
+      Some(submit(task, seed, solution, score))
     }
     else {
       None
@@ -55,6 +55,12 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
 
   private def writeFile(map : Map[Problem, Solution]) : Unit = {
     val pw = new PrintWriter(new File(fileName))
+
+    implicit val ordering = new Ordering[Problem] {
+      override def compare(x: Problem, y: Problem): Int =
+        if (x.task > y.task || (x.task == y.task && x.seed > y.seed)) 1 else if (x.task == y.task && x.seed == y.seed) 0 else -1
+    }
+
     map.toList.sortBy(_._1).foreach {
       case (problem, solution) =>
         pw.println(s"${problem.task};${problem.seed};${solution.solution};${solution.score}")
@@ -62,22 +68,25 @@ class Submiter(token : String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", 
     pw.close()
   }
 
-  private def submit(task : Int, seed : Int, solution : String) : Int = {
+  private def submit(task : Int, seed : Int, solution : String, score : Int) : Int = {
     Http(url)
       .auth(user = "", password = token)
-      .postData(formatPost(task, seed, solution))
+      .postData(formatPost(task, seed, solution, score))
       .header("Content-Type", "application/json")
       .asString.code
   }
 
-  private def formatPost(task : Int, seed : Int, solution : String) : String =
+  private def formatPost(task : Int, seed : Int, solution : String, score : Int) : String =
     s"""
       |[
       |  { "problemId": $task
       |  , "seed":      $seed
-      |  , "tag":       "$task.${seed}_${System.currentTimeMillis()}"
+      |  , "tag":       "$task.$seed.${score}_${System.currentTimeMillis()}"
       |  , "solution":  "$solution"
       |  }
       |]
     """.stripMargin
+
+  implicit def problem2double(p : Problem) : Double =
+    p.task + p.seed / 1000000
 }

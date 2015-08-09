@@ -48,7 +48,7 @@ class GamePlayer(scorer : Scorer) {
         case Some(tree) =>
           lastTree = tree
         case None =>
-          println("Shit happend!")
+          // println("Shit happend!")
           return None
       }
     }
@@ -63,7 +63,7 @@ class GamePlayer(scorer : Scorer) {
             updateState(move)(Right(es))
         }
       case None =>
-        println("End of game")
+        // println("End of game")
         None
     }
   }
@@ -80,7 +80,7 @@ class GamePlayer(scorer : Scorer) {
       // println(s"Current: $solution")
       Some(state)
     case Right(ge) =>
-      println(s"End (${ge.name}): $solution${move.symbols.head}")
+      // println(s"End (${ge.name}): $solution${move.symbols.head}")
       None
   }
 }
