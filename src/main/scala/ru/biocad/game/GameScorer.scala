@@ -3,17 +3,8 @@ package ru.biocad.game
 object GameScorer {
 
   def getScore(previousGameState: GameState, nextGameState: GameState): (Long, Int) = {
-
-    val currentFilled = previousGameState.boardState.filled.groupBy(c => c.r)
-    val nextFilled = nextGameState.boardState.filled.groupBy(c => c.r)
-
-    val currentFilledSize = currentFilled.size
-    val nextFilledSize = nextFilled.size
-
     val ls_old = previousGameState.lastAction.linesCleared
-    val ls = math.max(currentFilledSize - nextFilledSize, 0)
-
-//    println(s"Lines cleared: ${ls_old} and going to: ${ls}")
+    val ls = nextGameState.lastAction.linesCleared
 
     if (previousGameState.boardState.filled.length != nextGameState.boardState.filled.length) {
       val size = previousGameState.bee.members.size

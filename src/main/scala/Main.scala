@@ -47,8 +47,8 @@ object Gambler extends App {
 
     val problems = Game.loadProblems
 
-    val problem = 0
-    val attempt = 1
+    val problem = 1
+    val attempt = 4
     val seeds = problems(problem)
 
     val bestOfTheBest = seeds.map { case seed =>
