@@ -48,10 +48,10 @@ object Gambler extends App {
     val problems = Game.loadProblems
 
     val problem = 1
-    val attempt = 4
+    val attempt = 1
     val seeds = problems(problem)
 
-    val bestOfTheBest = seeds.map { case seed =>
+    val bestOfTheBest = seeds.par.map { case seed =>
       val games = (0 until attempt).par.map(i => {
         playGame(problem, seed, 4, stringOptimizer)
       })
