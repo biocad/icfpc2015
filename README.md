@@ -1,11 +1,5 @@
 # icfpc2015
 
-## Installation 
+## Run
 
-Install Aho Corasick library. To do it follow next steps:
-  
-    cd /icfpc2015
-    git submodule init
-    git submodule update
-    cd /ipcfpc2015/AhoCorasickDoubleArrayTrie
-    mvn clean install
+```java -jar target/icfpc2015-1.0.0.jar -Djsse.enableSNIExtension=false```
