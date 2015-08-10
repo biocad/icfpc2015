@@ -5,8 +5,7 @@ import akka.io.IO
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
 import ru.biocad.game._
-import ru.biocad.solver.{Weights, Scorer, DecisionTree, TreeSolver}
-import ru.biocad.util.Parser
+import ru.biocad.solver._
 import spray.can.Http
 
 import scala.concurrent.duration._
@@ -21,6 +20,8 @@ class ServiceHolder {
   val solDepth = 4
   val weights = new Weights
   val gamePlayer = new GamePlayer(new Scorer(weights), solDepth)
+  val submitter = new Submiter()
+  val changer = new StringChanger(scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"power_phrases.txt")).getLines())
   // make a Config with just your special setting
   val confStr = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"application.conf")).mkString
   val myConfig = ConfigFactory.parseString(confStr)
@@ -58,7 +59,18 @@ class ServiceHolder {
     }
     else {
       gamePlayer.releaseSolver()
-      gamePlayer.moveItMoveIt(Move(move))
+      gamePlayer.moveItMoveIt(Move(move)) match {
+        case Some(x) =>
+          Some(x)
+        case None =>
+          submitter.submitIfCool(gamePlayer.lastGameId, gamePlayer.lastSeed, changer(gamePlayer.endSolution), gamePlayer.state.score) match {
+            case Some(code) =>
+              println(s"Submission answer: $code")
+            case None =>
+              println("Stupid solution. It was not submitted.")
+          }
+          None
+      }
     }
   }
 

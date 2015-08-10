@@ -18,6 +18,7 @@ class GamePlayer(scorer : Scorer, depth: Int) {
   var lastSeed : Int = 0
 
   var solution = ""
+  var endSolution = ""
 
   def releaseSolver() : Unit = {
     lastSolver = null
@@ -81,6 +82,7 @@ class GamePlayer(scorer : Scorer, depth: Int) {
       Some(state)
     case Right(ge) =>
       println(s"Game ended with stated '${ge.name}'")
+      endSolution = solution + move.symbols.head
       None
   }
 }
