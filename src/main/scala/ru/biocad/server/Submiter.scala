@@ -4,6 +4,7 @@ import java.io.{File, PrintWriter}
 
 import argonaut.Argonaut._
 import argonaut.CodecJson
+import spray.http.DateTime
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.io.Source
@@ -91,7 +92,7 @@ class Submiter(token: String = "RVm6OOelIARr4U0Vi39X/fjCcU1YOOmjbZGTFEBzZ98=", c
   }
 
   private def formatPost(task: Int, seed: Int, solution: String, score: Int): String =
-    "[" + SubmitionPost(task, seed, solution, s"$task.$seed.$score.${System.currentTimeMillis()}").asJson.pretty(nospace) + "]"
+    "[" + SubmitionPost(task, seed, solution, s"$task.$seed.$score.${DateTime.now}").asJson.pretty(nospace) + "]"
 }
 
 case class SubmitionPost(problemId: Int, seed: Int, solution: String, tag: String)
