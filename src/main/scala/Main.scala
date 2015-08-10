@@ -21,14 +21,14 @@ object Main extends App {
 
 
 object Gambler extends App {
+  val stringOptimizer =
+    new StringChanger(scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"power_phrases.txt")).getLines())
 
   def playGame(problem: Int, seed: Int, depth: Int): (Int, String) = {
     val weights = Weights()
     val scorer = new ru.biocad.solver.Scorer(weights)
     val gp = new GamePlayer(scorer, depth)
 
-    val stringOptimizer =
-      new StringChanger(scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"power_phrases.txt")).getLines())
     val gameState = gp.startNewGame(problem, seed)
 
     @annotation.tailrec
