@@ -47,7 +47,7 @@ object Gambler extends App {
 
     val problems = Game.loadProblems
 
-    val problem = 1
+    val problem = 0
     val attempt = 1
     val seeds = problems(problem)
 

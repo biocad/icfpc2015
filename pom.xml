@@ -142,12 +142,6 @@
             <artifactId>spray-json_2.11</artifactId>
             <version>1.3.2</version>
         </dependency>
-        <!-- Aho -->
-        <dependency>
-            <groupId>AhoCorasickDoubleArrayTrie</groupId>
-            <artifactId>aho-corasick-double-array-trie</artifactId>
-            <version>1.0.1</version>
-        </dependency>
         <!-- HTTP requests -->
         <dependency>
             <groupId>net.databinder.dispatch</groupId>
