@@ -1,7 +1,7 @@
 package ru.biocad.server
 
 import akka.actor.Actor
-import ru.biocad.game.GameState
+import ru.biocad.game.{Game, GameState}
 import spray.routing._
 import spray.http.MediaTypes._
 
@@ -10,10 +10,10 @@ import spray.http.MediaTypes._
  * Date: 08.08.15
  * Time: 13:24
  */
-class RESTactor(problems : Map[Int, Vector[Int]],
-                newGame : String => Option[GameState],
+class RESTactor(newGame : String => Option[GameState],
                 update : Char => Option[GameState],
                 getSolution : Unit => String) extends Actor with HttpService {
+  val problems = Game.loadProblems
   val index = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"index.html")).mkString
   val hexbin = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"hexbin.js")).mkString
 

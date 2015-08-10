@@ -16,7 +16,6 @@ import scala.concurrent.duration._
  * Time: 13:20
  */
 class ServiceHolder {
-  val problems = Game.loadProblems
   val solDepth = 4
   val weights = new Weights
   val gamePlayer = new GamePlayer(new Scorer(weights), solDepth)
@@ -37,7 +36,7 @@ class ServiceHolder {
 
   // System
   implicit val system = ActorSystem.create("myname", complete) // instead of ActorSystem("honeycomb")
-  val service = system.actorOf(Props(classOf[RESTactor], problems, gameFromString, update, getSolution), "stateful")
+  val service = system.actorOf(Props(classOf[RESTactor], gameFromString, update, getSolution), "stateful")
   var solution = ""
 
   implicit val timeout = Timeout(5.seconds)
