@@ -62,11 +62,13 @@ class ServiceHolder {
         case Some(x) =>
           Some(x)
         case None =>
-          submitter.submitIfCool(gamePlayer.lastGameId, gamePlayer.lastSeed, changer(gamePlayer.endSolution), gamePlayer.state.score) match {
-            case Some(code) =>
-              println(s"Submission answer: $code")
-            case None =>
-              println("Stupid solution. It was not submitted.")
+          if (gamePlayer.endSolution.nonEmpty) {
+            submitter.submitIfCool(gamePlayer.lastGameId, gamePlayer.lastSeed, changer(gamePlayer.endSolution), gamePlayer.state.score) match {
+              case Some(code) =>
+                println(s"Submission answer: $code")
+              case None =>
+                println("Stupid solution. It was not submitted.")
+            }
           }
           None
       }

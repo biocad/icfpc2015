@@ -80,6 +80,10 @@ class GamePlayer(scorer : Scorer, depth: Int) {
       state = gs
       // println(s"Current: $solution")
       Some(state)
+    case Right(InvalidMove) =>
+      println("Stop! Invalid move!")
+      endSolution = ""
+      None
     case Right(ge) =>
       println(s"Game ended with stated '${ge.name}'")
       endSolution = solution + move.symbols.head
