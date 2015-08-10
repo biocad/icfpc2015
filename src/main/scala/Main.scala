@@ -21,10 +21,7 @@ object Main extends App {
 
 
 object Gambler extends App {
-  val stringOptimizer =
-    new StringChanger(scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"power_phrases.txt")).getLines())
-
-  def playGame(problem: Int, seed: Int, depth: Int): (Int, String) = {
+  def playGame(problem: Int, seed: Int, depth: Int, stringOptimizer : StringChanger): (Int, String) = {
     val weights = Weights()
     val scorer = new ru.biocad.solver.Scorer(weights)
     val gp = new GamePlayer(scorer, depth)
@@ -45,6 +42,9 @@ object Gambler extends App {
 
   override def main(args: Array[String]) {
 
+    val stringOptimizer =
+      new StringChanger(scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream(s"power_phrases.txt")).getLines())
+
     val problems = Game.loadProblems
 
     val problem = 0
@@ -53,7 +53,7 @@ object Gambler extends App {
 
     val bestOfTheBest = seeds.map { case seed =>
       val games = (0 until attempt).par.map(i => {
-        playGame(problem, seed, 4)
+        playGame(problem, seed, 4, stringOptimizer)
       })
       val (score, solution) = games.maxBy(g => g._1)
       println(s"Problem: $problem, Seed: $seed, Score: $score | Solution: $solution")
